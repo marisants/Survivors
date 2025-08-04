@@ -8,7 +8,7 @@ pygame.mixer.init()
 
 #controla os fraes por segundo do fundo
 clock = pygame.time.Clock()
-FPS = 100
+FPS = 50
 
 largura = 1500
 altura = 700 # define o tamanho da tela
@@ -80,8 +80,8 @@ relogio = pygame.time.Clock() # diz a velocidade
 
 while True:
     relogio.tick(20) # tempo
-    tela.fill(PRETO)
     dt = clock.tick(FPS) / 1000
+
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit() # é pra sair do progama 
@@ -92,8 +92,11 @@ while True:
                     pass
                   else:
                    aluno.pular() # se ele tiver no chão aí pode pular
-    for i in range (0, tiles):
+
+    for i in range (tiles):
         tela.blit(imagem_fundo, (i * imagem_fundo_largura + scroll, 0 ))
+
+    # atualiza o fundo
     if velocidade_scroll < velocidade_maxima:
         velocidade_scroll += aceleracao * dt
     elif velocidade_scroll > velocidade_maxima:
@@ -103,9 +106,8 @@ while True:
         #reinicia o scroll mas não reseta a velocidade, se mantém a rolagem e a velocidade
     if abs(scroll) > imagem_fundo_largura:
             scroll += imagem_fundo_largura
-    pygame.display.update()
 
-    
-    todas_as_sprites.draw(tela) # dsenha sapo na tela
     todas_as_sprites.update() # faz o upgrade
-    pygame.display.flip() # processamennto 
+    todas_as_sprites.draw(tela) # dsenha sapo na tela
+
+    pygame.display.update() # processamennto 
