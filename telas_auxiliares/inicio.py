@@ -11,7 +11,7 @@ def mostrar_inicio():
 
     estado = 'menu'
 
-    imagem_inicio = pygame.image.load('SURVI.png').convert()
+    imagem_inicio = pygame.image.load('imagens/inicio.png').convert()
     imagem_inicio = pygame.transform.scale(imagem_inicio, (1800, 700))
 
     clock = pygame.time.Clock()
