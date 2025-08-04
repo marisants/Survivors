@@ -1,9 +1,9 @@
 from inicio import mostrar_inicio
-from fase_1_teste import iniciar_fase1
+from fase_1 import jogar
 
 def main():
     mostrar_inicio()
-    iniciar_fase1()
+    jogar()
 
 if __name__ == '__main__':
     main()

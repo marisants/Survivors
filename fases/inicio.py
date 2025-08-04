@@ -4,7 +4,7 @@ from sys import exit
 
 def mostrar_inicio():
     pygame.init()
-    largura = 1800
+    largura = 1500
     altura = 700
     tela = pygame.display.set_mode((largura, altura))
     pygame.display.set_caption('Jogo')
@@ -12,7 +12,7 @@ def mostrar_inicio():
     estado = 'menu'
 
     imagem_inicio = pygame.image.load('imagens/inicio.png').convert()
-    imagem_inicio = pygame.transform.scale(imagem_inicio, (1800, 700))
+    imagem_inicio = pygame.transform.scale(imagem_inicio, (largura, altura))
 
     clock = pygame.time.Clock()
     while True:
