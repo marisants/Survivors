@@ -2,7 +2,8 @@ import pygame
 from pygame.locals import *
 from sys import exit
 import math
-
+def iniciar():
+  print('olá')
 pygame.init()
 #controlar os FPS do jogo
 clock = pygame.time.Clock()
