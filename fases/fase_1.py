@@ -19,6 +19,15 @@ def jogar():
     tela = pygame.display.set_mode((largura, altura))
     pygame.display.set_caption("Sprites")
 
+    cacto = pygame.image.load('imagens/cacto.png').convert_alpha() #criando o cacto
+    cacto = pygame.transform.scale(cacto, (32*7, 32*7)) 
+    cacto_rect = cacto.get_rect() #criando o retangulo do cacto
+    x = largura + 200
+    y = (altura - 100) - cacto.get_height() # pra ele ficar no mesmo chão do boneco
+    fonte = pygame.font.Font(None, 80)
+    texto = fonte.render("GAME OVER :(", True, (255, 255, 255))  
+    texto_rect = texto.get_rect(center = (750, 300)) # posição do texto
+    #essa classe n era pra tá aq nn,era pra tá no arquvio da classe do personagem, mas td bem :)
     class Aluno(pygame.sprite.Sprite): # a segunda "Sprite" é uma classe q já é do pygame 
         def __init__(self):
             pygame.sprite.Sprite.__init__(self) # inicializa a classe 
@@ -59,7 +68,14 @@ def jogar():
                 if self.atual >= len(self.sprites): # pra se repetir , no caso de quando acabar as sprits começa dnv
                     self.atual = 0  
                 self.image = self.sprites[int(self.atual)] # é pra poder botar número quebrado
-                self.image = pygame.transform.scale(self.image, (32*13, 32*13)) # aumenta o tamanho da img , a primeira é largura e a segunda é altura 
+                self.image = pygame.transform.scale(self.image, (32*13, 32*13)) # aumenta o tamanho da img , a primeira é largura e a segunda é altura
+        
+        def morrer(self):
+            tela.blit(texto, texto_rect) # desenha o texto na tela 
+            pygame.display.update() # atualiza o jogo
+            pygame.time.delay(2000) #tem um delay antes de fechar a tela
+            pygame.quit() 
+            exit()
 
 
 
@@ -69,7 +85,7 @@ def jogar():
 
     imagem_fundo = pygame.image.load("imagens/fundo_1.png").convert() # add a img de fundo
     imagem_fundo = pygame.transform.scale(imagem_fundo, (largura,altura)) # define o tamanho da img de fundo
-    imagem_fundo_largura = imagem_fundo.get_width() # perguntar a mary
+    imagem_fundo_largura = imagem_fundo.get_width() # perguntar a mary (essas duas linhas servem pra ajustar o tamanho da imagem d fundo)
     tiles = math.ceil(largura / 700 ) #  perguntar a mary
     #rolagem lateral do fundo  e aumeto gradual da velocidade
     scroll = 0 
@@ -85,7 +101,7 @@ def jogar():
 
         for event in pygame.event.get():
             if event.type == QUIT:
-                pygame.quit() # é pra sair do progama 
+                pygame.quit() # é pra sair do jogo
                 exit() # pra fechar a janela
             if event.type == KEYDOWN:
                 if event.key == K_SPACE: # pra só acontecer quando apertar na tecla do espaço
@@ -109,6 +125,18 @@ def jogar():
                 scroll += imagem_fundo_largura
 
         todas_as_sprites.update() # faz o upgrade
-        todas_as_sprites.draw(tela) # dsenha sapo na tela
+        todas_as_sprites.draw(tela) # dsenha sapo na tela (q sapo mulher?)
+        x -= velocidade_scroll * dt 
+        if x <- cacto.get_width(): # coloca o cacto na rolagem tb 
+            x = largura + 200
+        cacto_rect.topleft = (x, y) # pega as posições do cacto
+        tela.blit(cacto, cacto_rect) # desenha o cacto
+        aluno_mask = pygame.mask.from_surface(aluno.image) # faz com que a colisão ocorra somente com os pixels visíveis, tanto do cacto como do aluno
+        cacto_mask = pygame.mask.from_surface(cacto)
+        
+        offset = (cacto_rect.x - aluno.rect.x, cacto_rect.y - aluno.rect.y) # identifica a diferença das posições dos objetos na tela 
+        if aluno_mask.overlap(cacto_mask, offset): # overlap verifica se existe colisão
+            aluno.morrer()
+            
 
         pygame.display.update() # processamennto 
