@@ -27,6 +27,12 @@ def jogar():
     fonte = pygame.font.Font(None, 80)
     texto = fonte.render("GAME OVER :(", True, (255, 255, 255))  
     texto_rect = texto.get_rect(center = (750, 300)) # posição do texto
+    score = 0
+    def exibir_pontuacao (texto, tamanho, cor):
+        fonte = pygame.font.SysFont("comicsanssms", tamanho, True, False)
+        mensagem = f'{texto}'
+        mensagem_formatada = fonte.render(mensagem, True, cor)
+        return mensagem_formatada
     #essa classe n era pra tá aq nn,era pra tá no arquvio da classe do personagem, mas td bem :)
     class Aluno(pygame.sprite.Sprite): # a segunda "Sprite" é uma classe q já é do pygame 
         def __init__(self):
@@ -137,6 +143,9 @@ def jogar():
         offset = (cacto_rect.x - aluno.rect.x, cacto_rect.y - aluno.rect.y) # identifica a diferença das posições dos objetos na tela 
         if aluno_mask.overlap(cacto_mask, offset): # overlap verifica se existe colisão
             aluno.morrer()
-            
+        else:
+            score += 100
+            pontuacao = exibir_pontuacao(score, 50, (0,0,0))
+        tela.blit(pontuacao, (700,30)) 
 
         pygame.display.update() # processamennto 
