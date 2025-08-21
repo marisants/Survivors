@@ -24,11 +24,13 @@ def jogar():
     cacto_rect = cacto.get_rect() #criando o retangulo do cacto
     x = largura + 200
     y = (altura - 100) - cacto.get_height() # pra ele ficar no mesmo chão do boneco
-    fonte = pygame.font.Font(None, 80)
-    texto = fonte.render("GAME OVER :(", True, (255, 255, 255))  
+    
+    fonte = pygame.font.Font(None, 80) #criando uma fonte
+    texto = fonte.render("GAME OVER :(", True, (255, 255, 255))  #criando um texto
     texto_rect = texto.get_rect(center = (750, 300)) # posição do texto
-    score = 0
-    def exibir_pontuacao (texto, tamanho, cor):
+    
+    score = 0 # criando o score
+    def exibir_pontuacao (texto, tamanho, cor): #função que vai exibir a pontuação na tela
         fonte = pygame.font.SysFont("comicsanssms", tamanho, True, False)
         mensagem = f'{texto}'
         mensagem_formatada = fonte.render(mensagem, True, cor)
