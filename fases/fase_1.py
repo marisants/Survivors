@@ -25,14 +25,14 @@ def jogar():
     x = largura + 200
     y = (altura - 100) - cacto.get_height() # pra ele ficar no mesmo chão do boneco
     
-    fonte = pygame.font.Font(None, 80) #criando uma fonte
+    fonte = pygame.font.Font("ferramentas/HVD_Comic_Serif_Pro.otf", 40) #criando uma fonte
     texto = fonte.render("GAME OVER :(", True, (255, 255, 255))  #criando um texto
     texto_rect = texto.get_rect(center = (750, 300)) # posição do texto
     
     score = 0 # criando o score
-    def exibir_pontuacao (texto, tamanho, cor): #função que vai exibir a pontuação na tela
-        fonte = pygame.font.SysFont("comicsanssms", tamanho, True, False)
-        mensagem = f'{texto}'
+    def exibir_pontuacao (textop, tamanho, cor): #função que vai exibir a pontuação na tela
+        fonte = pygame.font.Font("ferramentas/HVD_Comic_Serif_Pro.otf", tamanho)
+        mensagem = f'{textop}'
         mensagem_formatada = fonte.render(mensagem, True, cor)
         return mensagem_formatada
     #essa classe n era pra tá aq nn,era pra tá no arquvio da classe do personagem, mas td bem :)
@@ -79,6 +79,7 @@ def jogar():
                 self.image = pygame.transform.scale(self.image, (32*13, 32*13)) # aumenta o tamanho da img , a primeira é largura e a segunda é altura
         
         def morrer(self):
+            tela.blit(pontuacao, (1300,30)) 
             tela.blit(texto, texto_rect) # desenha o texto na tela 
             pygame.display.update() # atualiza o jogo
             pygame.time.delay(2000) #tem um delay antes de fechar a tela
@@ -145,9 +146,10 @@ def jogar():
         offset = (cacto_rect.x - aluno.rect.x, cacto_rect.y - aluno.rect.y) # identifica a diferença das posições dos objetos na tela 
         if aluno_mask.overlap(cacto_mask, offset): # overlap verifica se existe colisão
             aluno.morrer()
+            
         else:
             score += 100
             pontuacao = exibir_pontuacao(score, 50, (0,0,0))
-        tela.blit(pontuacao, (700,30)) 
+        tela.blit(pontuacao, (1300,30)) 
 
         pygame.display.update() # processamennto 
