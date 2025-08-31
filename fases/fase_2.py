@@ -12,7 +12,7 @@ altura = 700
 tela = pygame.display.set_mode((largura, altura))
 pygame.display.set_caption("Jogo")
 
-imagem_fundo = pygame.image.load("imagens/fundo_2.png").convert()
+imagem_fundo = pygame.image.load("imagens/tela").convert()
 imagem_fundo = pygame.transform.scale(imagem_fundo, (1400,700))
 imagem_fundo_largura = imagem_fundo.get_width()
 tiles = math.ceil(largura / 700 )

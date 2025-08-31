@@ -13,7 +13,11 @@ def mostrar_inicio():
 
     imagem_inicio = pygame.image.load('imagens/inicio.png').convert()
     imagem_inicio = pygame.transform.scale(imagem_inicio, (largura, altura))
-
+    botao = pygame.image.load('ferramentas/botão teste.png').convert_alpha()
+    botao = pygame.transform.scale(botao, (32*7, 32*7))
+    botao_x = 1200
+    botao_y = 500
+    botao_rect = botao.get_rect(topleft=(botao_x, botao_y))
     clock = pygame.time.Clock()
     while True:
         if estado == 'menu':
@@ -23,10 +27,13 @@ def mostrar_inicio():
             if evento.type == QUIT:
                 pygame.quit()
                 exit()
-
-            if evento.type == KEYDOWN:
-                if estado == 'menu' and evento.key == K_RETURN:
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+               mouse_x, mouse_y = pygame.mouse.get_pos()
+               if botao_rect.collidepoint(mouse_x, mouse_y):
+                 print ("botão acionado")
+                 if estado == 'menu':
                     return
-            
+                
+        tela.blit(botao,(botao_x, botao_y))
         pygame.display.update()
         clock.tick(60)
