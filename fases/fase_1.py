@@ -26,9 +26,17 @@ def jogar():
     y = (altura - 100) - cacto.get_height() # pra ele ficar no mesmo chão do boneco
     
     fonte = pygame.font.Font("ferramentas/HVD_Comic_Serif_Pro.otf", 40) #criando uma fonte
-    texto = fonte.render("GAME OVER :(", True, (255, 255, 255))  #criando um texto
-    texto_rect = texto.get_rect(center = (750, 300)) # posição do texto
+    gameover_img = pygame.image.load("ferramentas/gameover.png").convert_alpha()
+    gameover_img = pygame.transform.scale(gameover_img, (800, 400))  # ajusta o tamanho
+    gameover_rect = gameover_img.get_rect(center=(800, 300))
     
+    botao_reiniciar = pygame.image.load("ferramentas/reiniciar.png").convert_alpha()
+    botao_reiniciar = pygame.transform.scale(botao_reiniciar, (400, 200))  # ajusta o tamanho
+    botao_reiniciar_rect = gameover_img.get_rect(center=(950, 500))
+    
+    botao_mapa = pygame.image.load("ferramentas/mapavermelho.png").convert_alpha()
+    botao_mapa = pygame.transform.scale(botao_mapa, (400, 200))  # ajusta o tamanho
+    botao_mapa_rect = gameover_img.get_rect(center=(950, 600))
     score = 0 # criando o score
     def exibir_pontuacao (textop, tamanho, cor): #função que vai exibir a pontuação na tela
         fonte = pygame.font.Font("ferramentas/HVD_Comic_Serif_Pro.otf", tamanho)
@@ -80,11 +88,13 @@ def jogar():
         
         def morrer(self):
             tela.blit(pontuacao, (1300,30)) 
-            tela.blit(texto, texto_rect) # desenha o texto na tela 
-            pygame.display.update() # atualiza o jogo
-            pygame.time.delay(2000) #tem um delay antes de fechar a tela
-            pygame.quit() 
-            exit()
+            tela.blit(gameover_img, gameover_rect)
+            tela.blit(botao_reiniciar, botao_reiniciar_rect)
+            tela.blit(botao_mapa, botao_mapa_rect)
+           # pygame.display.update() # atualiza o jogo
+           # pygame.time.delay(4000) #tem um delay antes de fechar a tela
+           # pygame.quit() 
+           # exit()
 
 
 
@@ -103,7 +113,7 @@ def jogar():
     aceleracao = 150 # o quanto a velocidade vai aumentar por segundo 
 
     relogio = pygame.time.Clock() # diz a velocidade
-
+    estado = "jogando"
     while True:
         relogio.tick(20) # tempo
         dt = clock.tick(FPS) / 1000
@@ -123,33 +133,35 @@ def jogar():
             tela.blit(imagem_fundo, (i * imagem_fundo_largura + scroll, 0 ))
 
         # atualiza o fundo
-        if velocidade_scroll < velocidade_maxima:
-            velocidade_scroll += aceleracao * dt
-        elif velocidade_scroll > velocidade_maxima:
-            velocidade_scroll = velocidade_maxima
+        if estado == "jogando":
+            if velocidade_scroll < velocidade_maxima:
+                velocidade_scroll += aceleracao * dt
+            elif velocidade_scroll > velocidade_maxima:
+                velocidade_scroll = velocidade_maxima
 
-        scroll -= velocidade_scroll * dt
-            #reinicia o scroll mas não reseta a velocidade, se mantém a rolagem e a velocidade
-        if abs(scroll) > imagem_fundo_largura:
-                scroll += imagem_fundo_largura
+            scroll -= velocidade_scroll * dt
+                #reinicia o scroll mas não reseta a velocidade, se mantém a rolagem e a velocidade
+            if abs(scroll) > imagem_fundo_largura:
+                    scroll += imagem_fundo_largura
 
-        todas_as_sprites.update() # faz o upgrade
-        todas_as_sprites.draw(tela) # dsenha sapo na tela (q sapo mulher?)
-        x -= velocidade_scroll * dt 
-        if x <- cacto.get_width(): # coloca o cacto na rolagem tb 
-            x = largura + 200
-        cacto_rect.topleft = (x, y) # pega as posições do cacto
-        tela.blit(cacto, cacto_rect) # desenha o cacto
-        aluno_mask = pygame.mask.from_surface(aluno.image) # faz com que a colisão ocorra somente com os pixels visíveis, tanto do cacto como do aluno
-        cacto_mask = pygame.mask.from_surface(cacto)
-        
-        offset = (cacto_rect.x - aluno.rect.x, cacto_rect.y - aluno.rect.y) # identifica a diferença das posições dos objetos na tela 
-        if aluno_mask.overlap(cacto_mask, offset): # overlap verifica se existe colisão
+            todas_as_sprites.update() # faz o upgrade
+            todas_as_sprites.draw(tela) # dsenha sapo na tela (q sapo mulher?)
+            x -= velocidade_scroll * dt 
+            if x <- cacto.get_width(): # coloca o cacto na rolagem tb 
+                x = largura + 200
+            cacto_rect.topleft = (x, y) # pega as posições do cacto
+            tela.blit(cacto, cacto_rect) # desenha o cacto
+            aluno_mask = pygame.mask.from_surface(aluno.image) # faz com que a colisão ocorra somente com os pixels visíveis, tanto do cacto como do aluno
+            cacto_mask = pygame.mask.from_surface(cacto)
+
+            offset = (cacto_rect.x - aluno.rect.x, cacto_rect.y - aluno.rect.y) # identifica a diferença das posições dos objetos na tela 
+            if aluno_mask.overlap(cacto_mask, offset): # overlap verifica se existe colisão
+                estado = "gameover"
+            else:
+                score += 100
+                pontuacao = exibir_pontuacao(score, 50, (0,0,0))
+            tela.blit(pontuacao, (1300,30)) 
+        elif estado == "gameover":
             aluno.morrer()
             
-        else:
-            score += 100
-            pontuacao = exibir_pontuacao(score, 50, (0,0,0))
-        tela.blit(pontuacao, (1300,30)) 
-
         pygame.display.update() # processamennto 

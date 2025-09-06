@@ -13,10 +13,10 @@ def mostrar_inicio():
 
     imagem_inicio = pygame.image.load('imagens/inicio.png').convert()
     imagem_inicio = pygame.transform.scale(imagem_inicio, (largura, altura))
-    botao = pygame.image.load('ferramentas/botão teste.png').convert_alpha()
+    botao = pygame.image.load('ferramentas/botãojogar.png').convert_alpha()
     botao = pygame.transform.scale(botao, (32*7, 32*7))
-    botao_x = 1200
-    botao_y = 500
+    botao_x = 650
+    botao_y = 250
     botao_rect = botao.get_rect(topleft=(botao_x, botao_y))
     clock = pygame.time.Clock()
     while True:
