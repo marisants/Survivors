@@ -19,11 +19,11 @@ def jogar():
     tela = pygame.display.set_mode((largura, altura))
     pygame.display.set_caption("Sprites")
 
-    cacto = pygame.image.load('imagens/cacto.png').convert_alpha() #criando o cacto
-    cacto = pygame.transform.scale(cacto, (32*7, 32*7)) 
-    cacto_rect = cacto.get_rect() #criando o retangulo do cacto
+    pedra = pygame.image.load('imagens/pedra.png').convert_alpha() #criando o pedra
+    pedra = pygame.transform.scale(pedra, (32*7, 32*7)) 
+    pedra_rect = pedra.get_rect() #criando o retangulo do pedra
     x = largura + 200
-    y = (altura - 100) - cacto.get_height() # pra ele ficar no mesmo chão do boneco
+    y = (altura - 100) - pedra.get_height() # pra ele ficar no mesmo chão do boneco
     
     fonte = pygame.font.Font("ferramentas/HVD_Comic_Serif_Pro.otf", 40) #criando uma fonte
     gameover_img = pygame.image.load("ferramentas/gameover.png").convert_alpha()
@@ -147,15 +147,15 @@ def jogar():
             todas_as_sprites.update() # faz o upgrade
             todas_as_sprites.draw(tela) # dsenha sapo na tela (q sapo mulher?)
             x -= velocidade_scroll * dt 
-            if x <- cacto.get_width(): # coloca o cacto na rolagem tb 
+            if x <- pedra.get_width(): # coloca o pedra na rolagem tb 
                 x = largura + 200
-            cacto_rect.topleft = (x, y) # pega as posições do cacto
-            tela.blit(cacto, cacto_rect) # desenha o cacto
-            aluno_mask = pygame.mask.from_surface(aluno.image) # faz com que a colisão ocorra somente com os pixels visíveis, tanto do cacto como do aluno
-            cacto_mask = pygame.mask.from_surface(cacto)
+            pedra_rect.topleft = (x, y) # pega as posições do pedra
+            tela.blit(pedra, pedra_rect) # desenha o pedra
+            aluno_mask = pygame.mask.from_surface(aluno.image) # faz com que a colisão ocorra somente com os pixels visíveis, tanto do pedra como do aluno
+            pedra_mask = pygame.mask.from_surface(pedra)
 
-            offset = (cacto_rect.x - aluno.rect.x, cacto_rect.y - aluno.rect.y) # identifica a diferença das posições dos objetos na tela 
-            if aluno_mask.overlap(cacto_mask, offset): # overlap verifica se existe colisão
+            offset = (pedra_rect.x - aluno.rect.x, pedra_rect.y - aluno.rect.y) # identifica a diferença das posições dos objetos na tela 
+            if aluno_mask.overlap(pedra_mask, offset): # overlap verifica se existe colisão
                 estado = "gameover"
             else:
                 score += 100
