@@ -1,3 +1,4 @@
+
 import pygame
 from pygame.locals import *
 from sys import exit
@@ -13,13 +14,37 @@ def mostrar_inicio():
 
     imagem_inicio = pygame.image.load('imagens/inicio.png').convert()
     imagem_inicio = pygame.transform.scale(imagem_inicio, (largura, altura))
-    botao = pygame.image.load('ferramentas/botãojogar.png').convert_alpha()
-    botao = pygame.transform.scale(botao, (32*7, 32*7))
+
+    #logo
+    logo = pygame.image.load('imagens/imagemquevaibalançar.png').convert_alpha()
+    logo = pygame.transform.scale(logo, (200 * 3, 100 * 5))
+    logo_x = 475
+    logo_y = 50
+
+    logo_vel = 60.0
+    logo_y_min = 50 - 10
+    logo_y_max = 50 + 10
+
+    botao = pygame.image.load('imagens/botao.png').convert_alpha()
+    botao = pygame.transform.scale(botao, (501 * 0.5, 124 * 0.5))
     botao_x = 650
-    botao_y = 250
+    botao_y = 300
+
     botao_rect = botao.get_rect(topleft=(botao_x, botao_y))
     clock = pygame.time.Clock()
+    FPS = 60
+
     while True:
+        dt = clock.tick(FPS) / 1000.0
+        logo_y += logo_vel * dt
+
+        if logo_y < logo_y_min: 
+            logo_y= logo_y_min
+            logo_vel = -logo_vel
+        elif logo_y> logo_y_max:
+            logo_y= logo_y_max
+            logo_vel = -logo_vel
+
         if estado == 'menu':
                 tela.blit(imagem_inicio, (0,0))
 
@@ -35,5 +60,6 @@ def mostrar_inicio():
                     return
                 
         tela.blit(botao,(botao_x, botao_y))
+        tela.blit(logo,(logo_x, logo_y))
         pygame.display.update()
         clock.tick(60)
