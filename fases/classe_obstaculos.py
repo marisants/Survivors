@@ -31,12 +31,17 @@ class Obstaculo(pygame.sprite.Sprite): # classe pros obstáculos
         self.criacao()
 
     def criacao(self):
-        self.rect.x = 1600  # fora da tela
+        self.rect.x = 1800  # fora da tela
         self.rect.y = self.chao_y - self.rect.height  # posição no chão
 
     def update(self, dt):
-        # move o obstáculo para a esquerda
-        self.rect.x -= self.velocidade_scroll * dt
+
+        # limita a velocidade do obstáculo (evita obstáculos impossíveis)
+        velocidade = min(self.velocidade_scroll, 1100)
+
+        # move o obstáculo
+        self.rect.x -= velocidade * dt
+
+        # remove quando sair da tela
         if self.rect.right < 0:
-            # remove o obstáculo quando sair da tela (ajuda o jogo a n ficar pesado)
             self.kill()

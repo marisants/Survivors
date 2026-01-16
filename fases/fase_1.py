@@ -29,6 +29,10 @@ class FaseUm:
         pygame.init()
         pygame.mixer.init()
 
+        pygame.mixer.music.load("sons/1-02. Title.mp3")
+        pygame.mixer.music.set_volume(0.3)  # volume entre 0.0 e 1.0
+        pygame.mixer.music.play(-1)  # -1 = loop infinito
+
         #controla os frames por segundo do fundo
         clock = pygame.time.Clock()
         FPS = 50
@@ -88,8 +92,8 @@ class FaseUm:
                 
                 self.pulo = False
                 self.vel_y = 0 #velocidade inicial do pulo
-                self.gravidade = 3000 #força da gravidade
-                self.forca_pulo = -1000 #o quanto que o boneco vai pular pra cima
+                self.gravidade = 4500 #força da gravidade
+                self.forca_pulo = -1400 #o quanto que o boneco vai pular pra cima
                 self.no_chao = True 
                 
             def pular(self):
@@ -149,6 +153,8 @@ class FaseUm:
         tempo_max_spawn = 2.5   # segundos
         proximo_tempo = random.uniform(tempo_min_spawn, tempo_max_spawn) # tempo aleatório entre os dois valores
         
+        musica_gameover_tocando = False
+
         estado = "jogando"
 
         while True:
@@ -201,10 +207,19 @@ class FaseUm:
 
                 #atualiza a velocidade dos obstáculos
                 for obstaculo in obstaculos:
-                    obstaculo.velocidade_scroll = velocidade_scroll # atualiza a velocidade do obstáculo conforme a velocidade do fundo
+                    obstaculo.velocidade_scroll = min(velocidade_scroll, 1100) # atualiza a velocidade do obstáculo conforme a velocidade do fundo
                 # colisão só com os pixels visíveis
                 if pygame.sprite.spritecollide(aluno, obstaculos, False, pygame.sprite.collide_mask):
+
+                    if not musica_gameover_tocando:
+                        pygame.mixer.music.stop()
+                        pygame.mixer.music.load("sons/04_Game Over (SID Stereo).mp3")
+                        pygame.mixer.music.set_volume(0.3)
+                        pygame.mixer.music.play(-1)
+                        musica_gameover_tocando = True
+
                     estado = "gameover"
+
                 else:
                     score += int(100 * dt)
                     pontuacao = exibir_pontuacao(score, 50, (0,0,0))

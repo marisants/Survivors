@@ -6,6 +6,13 @@ from sys import exit
 class TelaInicio:
     def mostrar_inicio(self, tela):
         pygame.init()
+
+        pygame.mixer.init()
+
+        pygame.mixer.music.load("sons/02. Beta Main Menu.mp3")
+        pygame.mixer.music.set_volume(0.3)
+        pygame.mixer.music.play(-1)
+
         largura = 1500
         altura = 700
         pygame.display.set_caption('Jogo')
@@ -57,6 +64,7 @@ class TelaInicio:
                     if botao_rect.collidepoint(mouse_x, mouse_y):
                         print ("botão acionado")
                         if estado == 'menu':
+                            pygame.mixer.music.stop()
                             return True
                     
             tela.blit(botao,(botao_x, botao_y))
