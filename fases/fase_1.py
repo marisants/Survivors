@@ -3,6 +3,9 @@ from pygame.locals import *
 from sys import exit
 import math
 import time 
+from classe_obstaculos import Obstaculo #importando a classe obstaculo
+import random #importando a biblioteca para gerar números aleatórios
+
 
 class FaseUm:
     def __init__(self):
@@ -20,13 +23,13 @@ class FaseUm:
             
             tela_principal.blit(self.superficie_fase, (0, 0))
             pygame.display.flip()
-            time.sleep(0.02) # Soneca curta para suavizar [16.3.1]
+            time.sleep(0.02) # Soneca curta para suavizar [16.3.1] soneca?? KKKKKKKKK
 
     def jogar(self,tela):
         pygame.init()
         pygame.mixer.init()
 
-        #controla os fraes por segundo do fundo
+        #controla os frames por segundo do fundo
         clock = pygame.time.Clock()
         FPS = 50
 
@@ -36,13 +39,8 @@ class FaseUm:
         PRETO = (0,0,0)  # só uma variável pra botar o none e nao a cor
 
         tela = pygame.display.set_mode((largura, altura))
-        pygame.display.set_caption("Sprites")
+        pygame.display.set_caption("Survivors") 
 
-        pedra = pygame.image.load('imagens/pedra.png').convert_alpha() #criando o pedra
-        pedra = pygame.transform.scale(pedra, (32*7, 32*7)) 
-        pedra_rect = pedra.get_rect() #criando o retangulo do pedra
-        x = largura + 200
-        y = (altura - 100) - pedra.get_height() # pra ele ficar no mesmo chão do boneco
         
         fonte = pygame.font.Font("ferramentas/HVD_Comic_Serif_Pro.otf", 40) #criando uma fonte
         gameover_img = pygame.image.load("ferramentas/gameover.png").convert_alpha()
@@ -80,80 +78,92 @@ class FaseUm:
                 self.image = self.sprites[self.atual] # pra mudar
                 self.image = pygame.transform.scale(self.image, (32*13, 32*13)) 
 
+                #a merma coisa q eu botei no obst´culo p fazer a colisão certinha
+                self.mask = pygame.mask.from_surface(self.image)
+
                 self.rect = self.image.get_rect() # pega tipo as cordenadas de onde tá a imagem 
                 self.rect.topleft = largura-1400, altura-480 # pra dzr a posição onde o boneco vai ficar
 
                 self.pos_y_inicial = altura-480 # pra dzr onde o boneco tá antes de pular
+                
                 self.pulo = False
-
+                self.vel_y = 0 #velocidade inicial do pulo
+                self.gravidade = 3000 #força da gravidade
+                self.forca_pulo = -1000 #o quanto que o boneco vai pular pra cima
+                self.no_chao = True 
+                
             def pular(self):
-                self.pulo = True 
-                self.som_pulo.play()
+                if self.no_chao:
+                    self.vel_y = self.forca_pulo # define a velocidade do pulo
+                    self.no_chao = False
+                    self.som_pulo.play()
 
             def update(self): # fzr update
-                    if self.pulo == True: # pra só se clicar no espaço acontecer as coisas 
-                        if self.rect.y <= 100:
-                            self.pulo = False
-                        self.rect.y -= 100 # defie a posição q ele vai ficar na tela com o pulo
-                    else :
-                        if self.rect.y < self.pos_y_inicial:
-                            self.rect.y += 50  # pra o boneco descer
-                        else :
-                            self.rect.y = self.pos_y_inicial
+                # gravidade
+                self.vel_y += self.gravidade * dt # aceleração da gravidade
+                self.rect.y += self.vel_y * dt # atualiza a posição do personagem
+                    
+                # fazer o personagem parar no chão
+                if self.rect.y >= self.pos_y_inicial: 
+                    self.rect.y = self.pos_y_inicial 
+                    self.vel_y = 0
+                    self.no_chao = True
 
-                    self.atual = self.atual + 0.5  # diminue a velocidade
-                    if self.atual >= len(self.sprites): # pra se repetir , no caso de quando acabar as sprits começa dnv
-                        self.atual = 0  
-                    self.image = self.sprites[int(self.atual)] # é pra poder botar número quebrado
-                    self.image = pygame.transform.scale(self.image, (32*13, 32*13)) # aumenta o tamanho da img , a primeira é largura e a segunda é altura
+                self.atual += 9 * dt # controla a velocidade da troca das sprites (cm eu tirei os dois relógio e deixei só um ai teve q mudar isso)
+                if self.atual >= len(self.sprites): # pra se repetir , no caso de quando acabar as sprits começa dnv
+                    self.atual = 0  
+                self.image = self.sprites[int(self.atual)] # é pra poder botar número quebrado
+                self.image = pygame.transform.scale(self.image, (32*13, 32*13)) # aumenta o tamanho da img , a primeira é largura e a segunda é altura
             
+            #faz a tela d gameover aparecer
             def morrer(self):
                 tela.blit(pontuacao, (1300,30)) 
                 tela.blit(gameover_img, gameover_rect)
                 tela.blit(botao_reiniciar, botao_reiniciar_rect)
                 tela.blit(botao_mapa, botao_mapa_rect)
-            # pygame.display.update() # atualiza o jogo
-            # pygame.time.delay(4000) #tem um delay antes de fechar a tela
-            # pygame.quit() 
-            # exit()
-
 
 
         todas_as_sprites = pygame.sprite.Group() # cria um grupo pra tds as sprites
+        obstaculos = pygame.sprite.Group() # cria um grupo pros obstáculos
         aluno = Aluno() # pra desenhar o aluno lá
         todas_as_sprites.add(aluno) # add aluno no grupo
-
+        
+        # carregar imagens do fundo
         imagem_fundo = pygame.image.load("imagens/fundo_1.png").convert() # add a img de fundo
         imagem_fundo = pygame.transform.scale(imagem_fundo, (largura,altura)) # define o tamanho da img de fundo
         imagem_fundo_largura = imagem_fundo.get_width() # perguntar a mary (essas duas linhas servem pra ajustar o tamanho da imagem d fundo)
-        tiles = math.ceil(largura / 700 ) #  perguntar a mary
+        tiles = math.ceil(largura / 700 ) #  perguntar a mary  (calcula o número de coisinho  pra cobrir a largura da tela)
         #rolagem lateral do fundo  e aumeto gradual da velocidade
         scroll = 0 
         velocidade_scroll = 100 #velocidade inicial da rolagem
         velocidade_maxima = 1500 
         aceleracao = 120 # o quanto a velocidade vai aumentar por segundo 
-
-        relogio = pygame.time.Clock() # diz a velocidade
+        
+        distancia_spawn = 0 # distância dos nascimentos dos obstáculos
+        #controle de spawn dos obstáculos
+        proximo_spawn = random.randint(900, 1200)
+        
+        tempo_spawn = 0 # tempo de nascimento dos obstáculos
+        #controle de spawn dos obstáculos
+        tempo_min_spawn = 1.6   # segundos 
+        tempo_max_spawn = 2.5   # segundos
+        proximo_tempo = random.uniform(tempo_min_spawn, tempo_max_spawn) # tempo aleatório entre os dois valores
+        
         estado = "jogando"
 
         while True:
-            relogio.tick(20) # tempo
+            #relogio.tick(20) # tempo
             dt = clock.tick(FPS) / 1000
-
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit() # é pra sair do jogo
                     exit() # pra fechar a janela
                 if event.type == KEYDOWN:
                     if event.key == K_SPACE: # pra só acontecer quando apertar na tecla do espaço
-                        if aluno.rect.y != aluno.pos_y_inicial: # pra n poder pular no ar
-                            pass
-                        else:
-                            aluno.pular() # se ele tiver no chão aí pode pular
+                        aluno.pular() 
 
             for i in range (tiles):
                 tela.blit(imagem_fundo, (i * imagem_fundo_largura + scroll, 0 ))
-
             # atualiza o fundo
             if estado == "jogando":
                 if velocidade_scroll < velocidade_maxima:
@@ -162,22 +172,38 @@ class FaseUm:
                     velocidade_scroll = velocidade_maxima
 
                 scroll -= velocidade_scroll * dt
+                #controle de spawn dos obstáculos por distância
+                distancia_spawn += velocidade_scroll * dt
+                if distancia_spawn >= proximo_spawn:
+                    distancia_spawn = 0
+                    proximo_spawn = random.randint(600, 900)
+    
+                    novo_obstaculo = Obstaculo(altura - 150)
+                    obstaculos.add(novo_obstaculo)
+                  
+                #controle de spawn dos obstáculos por tempo  
+                tempo_spawn += dt
+                if tempo_spawn >= proximo_tempo:
+                    tempo_spawn = 0
+                    proximo_tempo = random.uniform(tempo_min_spawn, tempo_max_spawn) # tempo aleatório entre os dois valores
+
+                    novo_obstaculo = Obstaculo(altura - 150) # cria um novo obstáculo
+                    obstaculos.add(novo_obstaculo) # adiciona o obstáculo ao grupo
+                    
                     #reinicia o scroll mas não reseta a velocidade, se mantém a rolagem e a velocidade
                 if abs(scroll) > imagem_fundo_largura:
                         scroll += imagem_fundo_largura
 
-                todas_as_sprites.update() # faz o upgrade
+                todas_as_sprites.update() # faz o update
                 todas_as_sprites.draw(tela) # dsenha sapo na tela (q sapo mulher?)
-                x -= velocidade_scroll * dt 
-                if x <- pedra.get_width(): # coloca o pedra na rolagem tb 
-                    x = largura + 200
-                pedra_rect.topleft = (x, y) # pega as posições do pedra
-                tela.blit(pedra, pedra_rect) # desenha o pedra
-                aluno_mask = pygame.mask.from_surface(aluno.image) # faz com que a colisão ocorra somente com os pixels visíveis, tanto do pedra como do aluno
-                pedra_mask = pygame.mask.from_surface(pedra)
+                obstaculos.update(dt) # update
+                obstaculos.draw(tela) #desenha os obstáculos na tela
 
-                offset = (pedra_rect.x - aluno.rect.x, pedra_rect.y - aluno.rect.y) # identifica a diferença das posições dos objetos na tela 
-                if aluno_mask.overlap(pedra_mask, offset): # overlap verifica se existe colisão
+                #atualiza a velocidade dos obstáculos
+                for obstaculo in obstaculos:
+                    obstaculo.velocidade_scroll = velocidade_scroll # atualiza a velocidade do obstáculo conforme a velocidade do fundo
+                # colisão só com os pixels visíveis
+                if pygame.sprite.spritecollide(aluno, obstaculos, False, pygame.sprite.collide_mask):
                     estado = "gameover"
                 else:
                     score += int(100 * dt)

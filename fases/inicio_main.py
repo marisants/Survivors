@@ -2,12 +2,11 @@ import pygame
 from inicio import TelaInicio
 from fase_1 import FaseUm
 
-
 def main():
     pygame.init()
     tela = pygame.display.set_mode((1500, 700))
     
-    # Criamos os objetos (instâncias das classes) [1]
+    # Criamos os objetos (instâncias das  classes) [1]
     menu = TelaInicio()
     fase1 = FaseUm()
     
