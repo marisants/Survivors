@@ -149,8 +149,8 @@ class FaseUm:
         
         tempo_spawn = 0 # tempo de nascimento dos obstáculos
         #controle de spawn dos obstáculos
-        tempo_min_spawn = 1.6   # segundos 
-        tempo_max_spawn = 2.5   # segundos
+        tempo_min_spawn = 0.6   # segundos 
+        tempo_max_spawn = 1.2  # segundos
         proximo_tempo = random.uniform(tempo_min_spawn, tempo_max_spawn) # tempo aleatório entre os dois valores
         
         musica_gameover_tocando = False
@@ -178,23 +178,11 @@ class FaseUm:
                     velocidade_scroll = velocidade_maxima
 
                 scroll -= velocidade_scroll * dt
-                #controle de spawn dos obstáculos por distância
-                distancia_spawn += velocidade_scroll * dt
-                if distancia_spawn >= proximo_spawn:
-                    distancia_spawn = 0
-                    proximo_spawn = random.randint(600, 900)
-    
+                
+                #controle de spawn dos obstáculos por distância 
+                if len(obstaculos) == 0 or list(obstaculos)[-1].rect.right < largura - 140:
                     novo_obstaculo = Obstaculo(altura - 150)
                     obstaculos.add(novo_obstaculo)
-                  
-                #controle de spawn dos obstáculos por tempo  
-                tempo_spawn += dt
-                if tempo_spawn >= proximo_tempo:
-                    tempo_spawn = 0
-                    proximo_tempo = random.uniform(tempo_min_spawn, tempo_max_spawn) # tempo aleatório entre os dois valores
-
-                    novo_obstaculo = Obstaculo(altura - 150) # cria um novo obstáculo
-                    obstaculos.add(novo_obstaculo) # adiciona o obstáculo ao grupo
                     
                     #reinicia o scroll mas não reseta a velocidade, se mantém a rolagem e a velocidade
                 if abs(scroll) > imagem_fundo_largura:
@@ -207,7 +195,7 @@ class FaseUm:
 
                 #atualiza a velocidade dos obstáculos
                 for obstaculo in obstaculos:
-                    obstaculo.velocidade_scroll = min(velocidade_scroll, 1100) # atualiza a velocidade do obstáculo conforme a velocidade do fundo
+                    obstaculo.velocidade_scroll = min(velocidade_scroll, 800) # atualiza a velocidade do obstáculo conforme a velocidade do fundo
                 # colisão só com os pixels visíveis
                 if pygame.sprite.spritecollide(aluno, obstaculos, False, pygame.sprite.collide_mask):
 
