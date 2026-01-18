@@ -3,7 +3,7 @@ from pygame.locals import *
 from sys import exit
 import math
 import time 
-from classe_obstaculos import Obstaculo #importando a classe obstaculo
+from classe_obstaculos import Obs_fase1 #importando a classe dos obstáculos dessa fase
 import random #importando a biblioteca para gerar números aleatórios
 
 
@@ -43,10 +43,9 @@ class FaseUm:
         PRETO = (0,0,0)  # só uma variável pra botar o none e nao a cor
 
         tela = pygame.display.set_mode((largura, altura))
-        pygame.display.set_caption("Survivors") 
+        pygame.display.set_caption("Survivors - Fase 1") 
 
-        
-        fonte = pygame.font.Font("ferramentas/HVD_Comic_Serif_Pro.otf", 40) #criando uma fonte
+
         gameover_img = pygame.image.load("ferramentas/gameover.png").convert_alpha()
         gameover_img = pygame.transform.scale(gameover_img, (800, 400))  # ajusta o tamanho
         gameover_rect = gameover_img.get_rect(center=(800, 300))
@@ -181,7 +180,7 @@ class FaseUm:
                 
                 #controle de spawn dos obstáculos por distância 
                 if len(obstaculos) == 0 or list(obstaculos)[-1].rect.right < largura - 140:
-                    novo_obstaculo = Obstaculo(altura - 150)
+                    novo_obstaculo = Obs_fase1(altura - 150) 
                     obstaculos.add(novo_obstaculo)
                     
                     #reinicia o scroll mas não reseta a velocidade, se mantém a rolagem e a velocidade
@@ -215,5 +214,8 @@ class FaseUm:
  
             elif estado == "gameover":
                 aluno.morrer()
+    #a pontuação máxima da fase (vai ter q aumentar, mas por enquanto dexa assim só p testar) se mudar aqui tem q musar na fase 2 tb 
+            if score >= 700:
+                return "FASE_TERMINADA" #muda o estado pra fase terminada
                 
             pygame.display.update() # processamennto 

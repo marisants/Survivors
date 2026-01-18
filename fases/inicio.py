@@ -15,7 +15,7 @@ class TelaInicio:
 
         largura = 1500
         altura = 700
-        pygame.display.set_caption('Jogo')
+        pygame.display.set_caption('Suvivors')
 
         estado = 'menu'
 
