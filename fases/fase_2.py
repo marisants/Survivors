@@ -153,10 +153,11 @@ class FaseDois:
                 
                 self.mask = pygame.mask.from_surface(self.image) #pro bixo da colisão funcionar certinho
                 
-                if self.estado == "abaixado" and self.no_chao:
-                    self.rect.y = self.pos_y_inicial + 130 #faz o bixo baixar  no mrm chão que ele fica em pé
-                else:
-                    self.rect.y = self.pos_y_inicial
+                if self.no_chao:
+                    if self.estado == "abaixado": 
+                        self.rect.y = self.pos_y_inicial + 130 #faz o bixo baixar  no mrm chão que ele fica em pé
+                    else:
+                        self.rect.y = self.pos_y_inicial
                             
             #faz a tela d gameover aparecer
             def morrer(self):
