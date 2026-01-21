@@ -10,28 +10,29 @@ import random #importando a biblioteca para gerar números aleatórios
 class FaseUm:
     def __init__(self):
         self.brilho = 0
-        self.superficie_fase = pygame.Surface((1500, 700)) # Ajuste ao seu tamanho
+        self.superficie_fase = pygame.Surface((1500, 700)) # tamanho da "tela de transição"
 
     def transicao_fade_in(self, tela_principal):
-        while self.brilho < 255:
+        while self.brilho < 255: # essas 3 linhas muda o brilho pra dar a impressão de ir aparecendo
             self.brilho += 5
             if self.brilho > 255: self.brilho = 255
             
-            # Desenha sua fase aqui dentro ou chama um método de desenho
-            self.superficie_fase.fill((0, 0, 0)) # Exemplo: fase verde
-            self.superficie_fase.set_alpha(self.brilho) # Define a transparência
+            # Desenha a fase aqui dentro ou chama um método de desenho
+            self.superficie_fase.fill((0, 0, 0)) # Exemplo: fase preta
+            self.superficie_fase.set_alpha(self.brilho) # Define a transparência , pra ir aarecendo devagar
             
             tela_principal.blit(self.superficie_fase, (0, 0))
             pygame.display.flip()
             time.sleep(0.02) # Soneca curta para suavizar [16.3.1] soneca?? KKKKKKKKK
+            #é , a tela tipo demora um tantin pra aparecer
 
     def jogar(self,tela):
         pygame.init()
         pygame.mixer.init()
 
         pygame.mixer.music.load("sons/1-02. Title.mp3")
-        pygame.mixer.music.set_volume(0.3)  # volume entre 0.0 e 1.0
-        pygame.mixer.music.play(-1)  # -1 = loop infinito
+        pygame.mixer.music.set_volume(0.3)  # diz o volume e só pd de 0.0 a 1.0
+        pygame.mixer.music.play(-1)  # deixa tocand sempre
 
         #controla os frames por segundo do fundo
         clock = pygame.time.Clock()
@@ -46,18 +47,39 @@ class FaseUm:
         pygame.display.set_caption("Survivors - Fase 1") 
 
 
-        gameover_img = pygame.image.load("ferramentas/gameover.png").convert_alpha()
-        gameover_img = pygame.transform.scale(gameover_img, (800, 400))  # ajusta o tamanho
-        gameover_rect = gameover_img.get_rect(center=(800, 300))
+        gameover_img = pygame.image.load("ferramentas/gameover2.png").convert_alpha()
+        gameover_img = pygame.transform.scale(gameover_img, (850, 200))  # ajusta o tamanho
+        gameover_rect = gameover_img.get_rect(center=(750, 200))
         
-        botao_reiniciar = pygame.image.load("ferramentas/reiniciar.png").convert_alpha()
-        botao_reiniciar = pygame.transform.scale(botao_reiniciar, (400, 200))  # ajusta o tamanho
-        botao_reiniciar_rect = gameover_img.get_rect(center=(950, 500))
+        botao_reiniciar = pygame.image.load("ferramentas/reiniciar2.png").convert_alpha()
+        botao_reiniciar = pygame.transform.scale(botao_reiniciar, (400, 100))  # ajusta o tamanho
+        botao_reiniciar_rect = botao_reiniciar.get_rect(center=(750, 410))
         
-        botao_mapa = pygame.image.load("ferramentas/mapavermelho.png").convert_alpha()
-        botao_mapa = pygame.transform.scale(botao_mapa, (400, 200))  # ajusta o tamanho
-        botao_mapa_rect = gameover_img.get_rect(center=(950, 600))
+        botao_mapa = pygame.image.load("ferramentas/mapavermelho2.png").convert_alpha()
+        botao_mapa = pygame.transform.scale(botao_mapa, (400, 100))  # ajusta o tamanho
+        botao_mapa_rect = botao_mapa.get_rect(center=(750, 540))
         score = 0 # criando o score
+
+        def resetar_jogo():
+                #essa próxima vai dzr q vai modificar essas variáveias aq dentro , mas q elas são de fora
+                nonlocal score, velocidade_scroll, scroll, estado, musica_gameover_tocando , aluno
+
+                score = 0 # zera a pontuação
+                velocidade_scroll = 100 # volta a velocidade do início do jogo
+                scroll = 0 # volta a rolagem do fundo , pra n ir de onde parou
+                musica_gameover_tocando = False # tipo para a música do game over
+                estado = "jogando" # sai do game over pra voltar pro jogo
+
+                obstaculos.empty() #apaga os obstáculos antigos 
+
+                todas_as_sprites.empty() # apaga o boneco antigo
+                aluno = Aluno() # atualiza o aluno principal
+                todas_as_sprites.add(aluno) # desenha esse boneco na tela
+
+                pygame.mixer.music.stop() # pra qualquer música
+                pygame.mixer.music.load("sons/1-02. Title.mp3") # só pega a música salva 
+                pygame.mixer.music.set_volume(0.3) # volume
+                pygame.mixer.music.play(-1) # ficar voltando a música se terminar
 
 
         def exibir_pontuacao (textop, tamanho, cor): #função que vai exibir a pontuação na tela
@@ -126,6 +148,7 @@ class FaseUm:
                 tela.blit(botao_mapa, botao_mapa_rect)
 
 
+
         todas_as_sprites = pygame.sprite.Group() # cria um grupo pra tds as sprites
         obstaculos = pygame.sprite.Group() # cria um grupo pros obstáculos
         aluno = Aluno() # pra desenhar o aluno lá
@@ -163,9 +186,13 @@ class FaseUm:
                 if event.type == QUIT:
                     pygame.quit() # é pra sair do jogo
                     exit() # pra fechar a janela
-                if event.type == KEYDOWN:
+                if event.type == KEYDOWN and estado == "jogando": # pra n dar pra pular no game over
                     if event.key == K_SPACE: # pra só acontecer quando apertar na tecla do espaço
                         aluno.pular() 
+                if estado == "gameover":
+                    if event.type == MOUSEBUTTONDOWN and event.button == 1: # só funciona se apertar o botão esquerou ou os dois do mouse 
+                        if botao_reiniciar_rect.collidepoint(event.pos): # pra saber se o clique foi na área que o botão foi desenhado 
+                           resetar_jogo()
 
             for i in range (tiles):
                 tela.blit(imagem_fundo, (i * imagem_fundo_largura + scroll, 0 ))

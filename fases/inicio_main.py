@@ -15,6 +15,7 @@ def main():
     
     while rodando:
         if estado == "INICIO":
+            
             # Se a função de início retornar que o botão foi clicado
             if menu.mostrar_inicio(tela):
                 # Executa a transição antes de mudar de vez para a fase
