@@ -51,6 +51,10 @@ class FaseUm:
         gameover_img = pygame.transform.scale(gameover_img, (850, 200))  # ajusta o tamanho
         gameover_rect = gameover_img.get_rect(center=(750, 200))
         
+        telap = pygame.image.load("ferramentas/gameover2.png").convert_alpha()
+        telap = pygame.transform.scale(gameover_img, (850, 200))  # ajusta o tamanho
+        telap_rect = gameover_img.get_rect(center=(750, 200))
+
         botao_reiniciar = pygame.image.load("ferramentas/reiniciar2.png").convert_alpha()
         botao_reiniciar = pygame.transform.scale(botao_reiniciar, (400, 100))  # ajusta o tamanho
         botao_reiniciar_rect = botao_reiniciar.get_rect(center=(750, 410))
@@ -87,6 +91,15 @@ class FaseUm:
             mensagem = f'{textop}'
             mensagem_formatada = fonte.render(mensagem, True, cor)
             return mensagem_formatada
+        
+        def tela_pause (tela, altura, largura, pontuacao):
+            fonte = pygame.font.Font("ferramentas/HVD_Comic_Serif_Pro.otf", 30)
+            texto_info = fonte.render("Pressione ESC para continuar", True, (255, 255, 0))
+
+            tela.blit(pontuacao, (1300,30))
+            tela.blit(telap, telap_rect)
+            tela.blit(texto_info, (500, 300))
+
         #essa classe n era pra tá aq nn,era pra tá no arquivo da classe do personagem, mas td bem :)
         class Aluno(pygame.sprite.Sprite): # a segunda "Sprite" é uma classe q já é do pygame 
             def __init__(self):
@@ -176,6 +189,7 @@ class FaseUm:
         proximo_tempo = random.uniform(tempo_min_spawn, tempo_max_spawn) # tempo aleatório entre os dois valores
         
         musica_gameover_tocando = False
+        pausado = False
 
         estado = "jogando"
 
@@ -188,12 +202,21 @@ class FaseUm:
                     exit() # pra fechar a janela
                 if event.type == KEYDOWN and estado == "jogando": # pra n dar pra pular no game over
                     if event.key == K_SPACE: # pra só acontecer quando apertar na tecla do espaço
-                        aluno.pular() 
+                        aluno.pular()
+                    if event.key == pygame.K_ESCAPE  and not pausado :
+                        pausado = True
+                    elif event.key == pygame.K_ESCAPE and pausado:
+                        pausado = False 
                 if estado == "gameover":
                     if event.type == MOUSEBUTTONDOWN and event.button == 1: # só funciona se apertar o botão esquerou ou os dois do mouse 
                         if botao_reiniciar_rect.collidepoint(event.pos): # pra saber se o clique foi na área que o botão foi desenhado 
                            resetar_jogo()
+            if pausado:
+                tela_pause (tela, altura, largura, pontuacao)
+                pygame.display.flip()
+                continue
 
+        
             for i in range (tiles):
                 tela.blit(imagem_fundo, (i * imagem_fundo_largura + scroll, 0 ))
             # atualiza o fundo
