@@ -51,22 +51,23 @@ class FaseUm:
         gameover_img = pygame.transform.scale(gameover_img, (850, 200))  # ajusta o tamanho
         gameover_rect = gameover_img.get_rect(center=(750, 200))
         
-        telap = pygame.image.load("ferramentas/gameover2.png").convert_alpha()
-        telap = pygame.transform.scale(gameover_img, (850, 200))  # ajusta o tamanho
-        telap_rect = gameover_img.get_rect(center=(750, 200))
+        telap = pygame.image.load("ferramentas/img_pause2.png").convert_alpha()
+        telap = pygame.transform.scale(telap, (950, 200))  # ajusta o tamanho
+        telap_rect = telap.get_rect(center=(750, 200))
 
         botao_reiniciar = pygame.image.load("ferramentas/reiniciar2.png").convert_alpha()
         botao_reiniciar = pygame.transform.scale(botao_reiniciar, (400, 100))  # ajusta o tamanho
-        botao_reiniciar_rect = botao_reiniciar.get_rect(center=(750, 410))
+        botao_reiniciar_rect = botao_reiniciar.get_rect(center=(750, 390))
         
-        botao_mapa = pygame.image.load("ferramentas/mapavermelho2.png").convert_alpha()
-        botao_mapa = pygame.transform.scale(botao_mapa, (400, 100))  # ajusta o tamanho
-        botao_mapa_rect = botao_mapa.get_rect(center=(750, 540))
         score = 0 # criando o score
+
+        pontuacao_final = None # só pra dzr q ainda n tem valor , mas n é 0
+
 
         def resetar_jogo():
                 #essa próxima vai dzr q vai modificar essas variáveias aq dentro , mas q elas são de fora
-                nonlocal score, velocidade_scroll, scroll, estado, musica_gameover_tocando , aluno
+                nonlocal score, velocidade_scroll, scroll, estado, musica_gameover_tocando , aluno , pontuacao_final
+                pontuacao_final = None # tb só pra dzr q n tem valor ainda , mas agr é validado
 
                 score = 0 # zera a pontuação
                 velocidade_scroll = 100 # volta a velocidade do início do jogo
@@ -85,7 +86,7 @@ class FaseUm:
                 pygame.mixer.music.set_volume(0.3) # volume
                 pygame.mixer.music.play(-1) # ficar voltando a música se terminar
 
-
+        # ransforma texto em img
         def exibir_pontuacao (textop, tamanho, cor): #função que vai exibir a pontuação na tela
             fonte = pygame.font.Font("ferramentas/HVD_Comic_Serif_Pro.otf", tamanho)
             mensagem = f'{textop}'
@@ -93,12 +94,12 @@ class FaseUm:
             return mensagem_formatada
         
         def tela_pause (tela, altura, largura, pontuacao):
-            fonte = pygame.font.Font("ferramentas/HVD_Comic_Serif_Pro.otf", 30)
+            fonte = pygame.font.Font("ferramentas/HVD_Comic_Serif_Pro.otf", 40)
             texto_info = fonte.render("Pressione ESC para continuar", True, (255, 255, 0))
 
             tela.blit(pontuacao, (1300,30))
             tela.blit(telap, telap_rect)
-            tela.blit(texto_info, (500, 300))
+            tela.blit(texto_info, (445, 320))
 
         #essa classe n era pra tá aq nn,era pra tá no arquivo da classe do personagem, mas td bem :)
         class Aluno(pygame.sprite.Sprite): # a segunda "Sprite" é uma classe q já é do pygame 
@@ -154,13 +155,16 @@ class FaseUm:
                 self.image = pygame.transform.scale(self.image, (32*13, 32*13)) # aumenta o tamanho da img , a primeira é largura e a segunda é altura
             
             #faz a tela d gameover aparecer
-            def morrer(self):
-                tela.blit(pontuacao, (1300,30)) 
-                tela.blit(gameover_img, gameover_rect)
+            def morrer(self): # é um método da classe aluno e só é chamado o estado = game over
+                tela.blit(gameover_img, gameover_rect) # bota a img no canto crt
+
+                if pontuacao_final: # se tiver pontuação final
+                    tela.blit(
+                        pontuacao_final,
+                        pontuacao_final.get_rect(center=(750, 500))
+                    ) # tudo acima desenha a pontuação
+                #coisa do botão
                 tela.blit(botao_reiniciar, botao_reiniciar_rect)
-                tela.blit(botao_mapa, botao_mapa_rect)
-
-
 
         todas_as_sprites = pygame.sprite.Group() # cria um grupo pra tds as sprites
         obstaculos = pygame.sprite.Group() # cria um grupo pros obstáculos
@@ -255,6 +259,11 @@ class FaseUm:
                         pygame.mixer.music.play(-1)
                         musica_gameover_tocando = True
 
+                    pontuacao_final = exibir_pontuacao(
+                        f"Pontos finais: {score}", 60, (0,0,0)
+                    ) # pelo q entendi é pra pontuação variar , n ser fixa
+                     # e imprime cm uma img , n cm número
+
                     estado = "gameover"
 
                 else:
@@ -264,7 +273,7 @@ class FaseUm:
  
             elif estado == "gameover":
                 aluno.morrer()
-    #a pontuação máxima da fase (vai ter q aumentar, mas por enquanto dexa assim só p testar) se mudar aqui tem q musar na fase 2 tb 
+    #a pontuação máxima da fase (vai ter q aumentar, mas por enquanto deixa assim só p testar) se mudar aqui tem q musar na fase 2 tb 
             if score >= 700:
                 return "FASE_TERMINADA" #muda o estado pra fase terminada
                 

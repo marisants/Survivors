@@ -262,5 +262,9 @@ class FaseDois:
  
             elif estado == "gameover":
                 aluno.morrer()
+
+            if score >= 1000:
+                return "FASE_TERMINADA"
+
                 
             pygame.display.update() # processamennto 
