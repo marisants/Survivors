@@ -42,32 +42,6 @@ def main():
 
             if resultado == "FASE_TERMINADA":
                 estado = "FIM"
-
-        
-        if estado == "INICIO":
-            if menu.mostrar_inicio(tela):
-                fase1.transicao_fade_in(tela)
-                estado = "FASE1"
-
-        elif estado == "FASE1":
-            resultado = fase1.jogar(tela)
-
-            if resultado == "FASE_TERMINADA":
-                fase2.transicao_fade_in(tela)
-                estado = "FASE2"
-
-        elif estado == "FASE2":
-            resultado = fase2.jogar(tela)
-
-            if resultado == "FASE_TERMINADA":
-                fase3.transicao_fade_in(tela)
-                estado = "FASE3"
-
-        elif estado == "FASE3":
-            resultado = fase3.jogar(tela)
-
-            if resultado == "FASE_TERMINADA":
-                estado = "FIM"
                 
         pygame.display.flip()
 

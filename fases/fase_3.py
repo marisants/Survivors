@@ -3,7 +3,7 @@ from pygame.locals import *
 from sys import exit
 import math
 import time 
-from classe_obstaculos import Obs_fase2 #importando a classe dos obstáculos dessa fase
+from classe_obstaculos import Obs_fase3 #importando a classe dos obstáculos dessa fase
 import random #importando a biblioteca para gerar números aleatórios
 
 
@@ -59,7 +59,7 @@ class FaseTres:
         botao_reiniciar = pygame.transform.scale(botao_reiniciar, (400, 100))  # ajusta o tamanho
         botao_reiniciar_rect = botao_reiniciar.get_rect(center=(750, 390))
 
-        score = 700 # aqui coloca o limite que foi pra passar da fase 1
+        score = 1400 # aqui coloca o limite que foi pra passar da fase 2
 
         pontuacao_final = None # só pra dzr q ainda n tem valor , mas n é 0
 
@@ -289,7 +289,7 @@ class FaseTres:
                 
                 #controle de spawn dos obstáculos por distância 
                 if len(obstaculos) == 0 or list(obstaculos)[-1].rect.right < largura - 140:
-                    novo_obstaculo = Obs_fase2(altura - 150) 
+                    novo_obstaculo = Obs_fase3(altura - 150) 
                     obstaculos.add(novo_obstaculo)
                     
                     #reinicia o scroll mas não reseta a velocidade, se mantém a rolagem e a velocidade
@@ -329,7 +329,7 @@ class FaseTres:
             elif estado == "gameover":
                 aluno.morrer()
     #a pontuação máxima da fase (vai ter q aumentar, mas por enquanto deixa assim só p testar) se mudar aqui tem q musar na fase 2 tb 
-            if score >= 700:
+            if score >= 2100:
                 return "FASE_TERMINADA" #muda o estado pra fase terminada
                 
             pygame.display.update() # processamennto 

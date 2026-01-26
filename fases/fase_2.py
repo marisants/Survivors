@@ -196,7 +196,8 @@ class FaseDois:
         musica_gameover_tocando = False
 
         estado = "jogando"
-
+        
+        
         while True:
             #relogio.tick(20) # tempo
             dt = clock.tick(FPS) / 1000
@@ -263,8 +264,10 @@ class FaseDois:
             elif estado == "gameover":
                 aluno.morrer()
 
-            if score >= 1000:
+            if score >= 1400:
+                pygame.mixer.music.stop()
                 return "FASE_TERMINADA"
+                break
 
                 
             pygame.display.update() # processamennto 
