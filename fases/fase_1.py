@@ -5,6 +5,7 @@ import math
 import time 
 from classe_obstaculos import Obs_fase1 #importando a classe dos obstáculos dessa fase
 import random #importando a biblioteca para gerar números aleatórios
+from funcoes import tela_pause, tela_vitoria
 
 
 class FaseUm:
@@ -55,14 +56,6 @@ class FaseUm:
         botao_reiniciar = pygame.transform.scale(botao_reiniciar, (400, 100))  # ajusta o tamanho
         botao_reiniciar_rect = botao_reiniciar.get_rect(center=(750, 390))
 
-        telap = pygame.image.load("ferramentas/img_pause2.png").convert_alpha()
-        telap = pygame.transform.scale(telap, (950, 200))  # ajusta o tamanho
-        telap_rect = telap.get_rect(center=(750, 200))
-
-        telav = pygame.image.load("ferramentas/img_pause2.png").convert_alpha()
-        telav = pygame.transform.scale(telav, (950, 200))  # ajusta o tamanho
-        telav_rect = telap.get_rect(center=(750, 200))
-
         botao_proximo = pygame.image.load("ferramentas/reiniciar2.png").convert_alpha()
         botao_proximo = pygame.transform.scale(botao_proximo, (400, 100))  # ajusta o tamanho
         botao_proximo_rect = botao_proximo.get_rect(center=(750, 510))
@@ -72,7 +65,7 @@ class FaseUm:
         pontuacao_final = None # só pra dzr q ainda n tem valor , mas n é 0
 
         tempo_j = 0.0
-        tempo_v = 30
+        tempo_v = 5
 
         def resetar_jogo():
                 #essa próxima vai dzr q vai modificar essas variáveias aq dentro , mas q elas são de fora
@@ -105,19 +98,6 @@ class FaseUm:
             mensagem_formatada = fonte.render(mensagem, True, cor)
             return mensagem_formatada
         
-        def tela_pause (tela, pontuacao):
-            fonte = pygame.font.Font("ferramentas/HVD_Comic_Serif_Pro.otf", 40)
-            texto_info = fonte.render("Pressione ESC para continuar", True, (255, 255, 0))
-
-            tela.blit(pontuacao, (1300,30))
-            tela.blit(telap, telap_rect)
-            tela.blit(texto_info, (445, 320))
-
-        def tela_vitoria (tela, pontuacao):
-            tela.blit(pontuacao, (1300, 30))
-            tela.blit(telav, telav_rect)
-            tela.blit(botao_reiniciar, botao_reiniciar_rect)
-            tela.blit(botao_proximo, botao_proximo_rect)
 
         #essa classe n era pra tá aq nn,era pra tá no arquivo da classe do personagem, mas td bem :)
         class Aluno(pygame.sprite.Sprite): # a segunda "Sprite" é uma classe q já é do pygame 
