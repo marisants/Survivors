@@ -3,6 +3,9 @@ from inicio import TelaInicio
 from fase_1 import FaseUm
 from fase_2 import FaseDois # importando a fase 2
 from fase_3 import FaseTres # importando a fase 3
+from fase_4 import FaseQuatro # importando a fase 3
+
+
 def main():
     pygame.init()
     tela = pygame.display.set_mode((1500, 700))
@@ -12,6 +15,8 @@ def main():
     fase1 = FaseUm()
     fase2 = FaseDois() #criando o obj da fase 2
     fase3 = FaseTres() #criando o obj da fase 3
+    fase4 = FaseQuatro() #criando o obj da fase 3
+
 
     estado = "INICIO"
     rodando = True
@@ -39,6 +44,13 @@ def main():
 
         elif estado == "FASE3":
             resultado = fase3.jogar(tela)
+
+            if resultado == "FASE_TERMINADA":
+                fase4.transicao_fade_in(tela)
+                estado = "FASE4"
+
+        elif estado == "FASE4":
+            resultado = fase4.jogar(tela)
 
             if resultado == "FASE_TERMINADA":
                 estado = "FIM"

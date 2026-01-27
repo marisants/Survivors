@@ -331,5 +331,6 @@ class FaseTres:
     #a pontuação máxima da fase (vai ter q aumentar, mas por enquanto deixa assim só p testar) se mudar aqui tem q musar na fase 2 tb 
             if score >= 2100:
                 return "FASE_TERMINADA" #muda o estado pra fase terminada
+                break
                 
             pygame.display.update() # processamennto 

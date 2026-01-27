@@ -3,7 +3,7 @@ from pygame.locals import *
 from sys import exit
 import math
 import time 
-from classe_obstaculos import Obs_fase2 #importando a classe dos obstáculos dessa fase
+from classe_obstaculos import Obs_fase3 #importando a classe dos obstáculos dessa fase
 import random #importando a biblioteca para gerar números aleatórios
 
 
@@ -44,7 +44,7 @@ class FaseQuatro:
         PRETO = (0,0,0)  # só uma variável pra botar o none e nao a cor
 
         tela = pygame.display.set_mode((largura, altura))
-        pygame.display.set_caption("Survivors - Fase 4") 
+        pygame.display.set_caption("Survivors - Fase 3") 
 
 
         gameover_img = pygame.image.load("ferramentas/gameover2.png").convert_alpha()
@@ -58,8 +58,8 @@ class FaseQuatro:
         botao_reiniciar = pygame.image.load("ferramentas/reiniciar2.png").convert_alpha()
         botao_reiniciar = pygame.transform.scale(botao_reiniciar, (400, 100))  # ajusta o tamanho
         botao_reiniciar_rect = botao_reiniciar.get_rect(center=(750, 390))
-        
-        score = 0 # criando o score
+
+        score = 1400 # aqui coloca o limite que foi pra passar da fase 2
 
         pontuacao_final = None # só pra dzr q ainda n tem valor , mas n é 0
 
@@ -107,11 +107,24 @@ class FaseQuatro:
                 pygame.sprite.Sprite.__init__(self) # inicializa a classe 
                 self.som_pulo = pygame.mixer.Sound("sons/pulando.wav")
                 self.som_pulo.set_volume(1)
-                self.sprites = [] # cria uma lista
-                self.sprites.append(pygame.image.load('imagens/meninocorrer1.png'))
-                self.sprites.append(pygame.image.load('imagens/meninocorrer2.png'))
-                self.sprites.append(pygame.image.load('imagens/meninocorrer3.png'))
-                self.sprites.append(pygame.image.load('imagens/meninocorrer4.png')) # só pra colocar as sprites
+                # o do boneco correr
+                self.sprites_correndo = [] # cria uma lista
+                self.sprites_correndo.append(pygame.image.load('imagens/meninocorrer1.png'))
+                self.sprites_correndo.append(pygame.image.load('imagens/meninocorrer2.png'))
+                self.sprites_correndo.append(pygame.image.load('imagens/meninocorrer3.png'))
+                self.sprites_correndo.append(pygame.image.load('imagens/meninocorrer4.png')) # só pra colocar as sprites
+
+                #o do boneco agachar
+                self.sprites_abaixando = [] # cria uma lista
+                self.sprites_abaixando.append(pygame.image.load('imagens/agachar1.png'))
+                self.sprites_abaixando.append(pygame.image.load('imagens/agachar2.png'))
+                self.sprites_abaixando.append(pygame.image.load('imagens/agachar3.png'))
+                self.sprites_abaixando.append(pygame.image.load('imagens/agachar4.png')) # só pra colocar as sprites
+                
+                #pra saber o estado do boneco
+                self.estado = "andando"
+                self.sprites = self.sprites_correndo # define as sprites iniciais como correndo
+
 
                 self.atual = 0 # pra comecar da primeira imagem
                 self.image = self.sprites[self.atual] # pra mudar
@@ -137,6 +150,19 @@ class FaseQuatro:
                     self.no_chao = False
                     self.som_pulo.play()
 
+            def abaixar(self):
+                if self.no_chao:
+                  self.estado = "abaixado"
+                  self.sprites = self.sprites_abaixando
+                  self.atual = 0
+
+            def levantar(self):
+                if self.estado == "abaixado":
+                    self.estado = "andando"
+                    self.sprites = self.sprites_correndo
+                    self.atual = 0
+            
+
             def update(self): # fzr update
                 # gravidade
                 self.vel_y += self.gravidade * dt # aceleração da gravidade
@@ -154,6 +180,26 @@ class FaseQuatro:
                 self.image = self.sprites[int(self.atual)] # é pra poder botar número quebrado
                 self.image = pygame.transform.scale(self.image, (32*13, 32*13)) # aumenta o tamanho da img , a primeira é largura e a segunda é altura
             
+                base = self.rect.midbottom # pra manter o boneco n canto q tá quando abaixar
+
+                self.image = self.sprites[int(self.atual)] # é pra poder botar número quebrado
+                
+                if self.estado == "abaixado":
+                    self.image = pygame.transform.scale(self.image, (32*7, 32*7)) #ajusta o tamanho quando abaixa
+                else:
+                    self.image = pygame.transform.scale(self.image, (32*13, 32*13))  #se n tiver abaixado é o normal
+                
+                self.rect = self.image.get_rect(midbottom=base) #deixa o boneco no mermo lugar quando muda a sprite
+                
+                self.mask = pygame.mask.from_surface(self.image) #pro bixo da colisão funcionar certinho
+                
+                if self.no_chao:
+                    if self.estado == "abaixado": 
+                        self.rect.y = self.pos_y_inicial + 130 #faz o bixo baixar  no mrm chão que ele fica em pé
+                    else:
+                        self.rect.y = self.pos_y_inicial
+                            
+
             #faz a tela d gameover aparecer
             def morrer(self): # é um método da classe aluno e só é chamado o estado = game over
                 tela.blit(gameover_img, gameover_rect) # bota a img no canto crt
@@ -207,6 +253,15 @@ class FaseQuatro:
                 if event.type == KEYDOWN and estado == "jogando": # pra n dar pra pular no game over
                     if event.key == K_SPACE: # pra só acontecer quando apertar na tecla do espaço
                         aluno.pular()
+
+                if event.type == KEYDOWN:
+                  if event.key == K_DOWN:
+                      aluno.abaixar()
+                
+                if event.type == KEYUP: # quando soltar a tecla
+                    if event.key == K_DOWN:
+                        aluno.levantar()
+
                     if event.key == pygame.K_ESCAPE  and not pausado :
                         pausado = True
                     elif event.key == pygame.K_ESCAPE and pausado:
@@ -234,7 +289,7 @@ class FaseQuatro:
                 
                 #controle de spawn dos obstáculos por distância 
                 if len(obstaculos) == 0 or list(obstaculos)[-1].rect.right < largura - 140:
-                    novo_obstaculo = Obs_fase2(altura - 150) 
+                    novo_obstaculo = Obs_fase3(altura - 150) 
                     obstaculos.add(novo_obstaculo)
                     
                     #reinicia o scroll mas não reseta a velocidade, se mantém a rolagem e a velocidade
@@ -274,7 +329,8 @@ class FaseQuatro:
             elif estado == "gameover":
                 aluno.morrer()
     #a pontuação máxima da fase (vai ter q aumentar, mas por enquanto deixa assim só p testar) se mudar aqui tem q musar na fase 2 tb 
-            if score >= 700:
+            if score >= 2999:
                 return "FASE_TERMINADA" #muda o estado pra fase terminada
+                break
                 
             pygame.display.update() # processamennto 
