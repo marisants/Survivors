@@ -50,23 +50,33 @@ class FaseUm:
         gameover_img = pygame.image.load("ferramentas/gameover2.png").convert_alpha()
         gameover_img = pygame.transform.scale(gameover_img, (850, 200))  # ajusta o tamanho
         gameover_rect = gameover_img.get_rect(center=(750, 200))
-        
-        telap = pygame.image.load("ferramentas/img_pause2.png").convert_alpha()
-        telap = pygame.transform.scale(telap, (950, 200))  # ajusta o tamanho
-        telap_rect = telap.get_rect(center=(750, 200))
 
         botao_reiniciar = pygame.image.load("ferramentas/reiniciar2.png").convert_alpha()
         botao_reiniciar = pygame.transform.scale(botao_reiniciar, (400, 100))  # ajusta o tamanho
         botao_reiniciar_rect = botao_reiniciar.get_rect(center=(750, 390))
+
+        telap = pygame.image.load("ferramentas/img_pause2.png").convert_alpha()
+        telap = pygame.transform.scale(telap, (950, 200))  # ajusta o tamanho
+        telap_rect = telap.get_rect(center=(750, 200))
+
+        telav = pygame.image.load("ferramentas/img_pause2.png").convert_alpha()
+        telav = pygame.transform.scale(telav, (950, 200))  # ajusta o tamanho
+        telav_rect = telap.get_rect(center=(750, 200))
+
+        botao_proximo = pygame.image.load("ferramentas/reiniciar2.png").convert_alpha()
+        botao_proximo = pygame.transform.scale(botao_proximo, (400, 100))  # ajusta o tamanho
+        botao_proximo_rect = botao_proximo.get_rect(center=(750, 510))
         
         score = 0 # criando o score
 
         pontuacao_final = None # só pra dzr q ainda n tem valor , mas n é 0
 
+        tempo_j = 0.0
+        tempo_v = 30
 
         def resetar_jogo():
                 #essa próxima vai dzr q vai modificar essas variáveias aq dentro , mas q elas são de fora
-                nonlocal score, velocidade_scroll, scroll, estado, musica_gameover_tocando , aluno , pontuacao_final
+                nonlocal score, velocidade_scroll, scroll, estado, musica_gameover_tocando , aluno , pontuacao_final, tempo_j
                 pontuacao_final = None # tb só pra dzr q n tem valor ainda , mas agr é validado
 
                 score = 0 # zera a pontuação
@@ -74,6 +84,8 @@ class FaseUm:
                 scroll = 0 # volta a rolagem do fundo , pra n ir de onde parou
                 musica_gameover_tocando = False # tipo para a música do game over
                 estado = "jogando" # sai do game over pra voltar pro jogo
+
+                tempo_j = 0.0
 
                 obstaculos.empty() #apaga os obstáculos antigos 
 
@@ -93,13 +105,19 @@ class FaseUm:
             mensagem_formatada = fonte.render(mensagem, True, cor)
             return mensagem_formatada
         
-        def tela_pause (tela, altura, largura, pontuacao):
+        def tela_pause (tela, pontuacao):
             fonte = pygame.font.Font("ferramentas/HVD_Comic_Serif_Pro.otf", 40)
             texto_info = fonte.render("Pressione ESC para continuar", True, (255, 255, 0))
 
             tela.blit(pontuacao, (1300,30))
             tela.blit(telap, telap_rect)
             tela.blit(texto_info, (445, 320))
+
+        def tela_vitoria (tela, pontuacao):
+            tela.blit(pontuacao, (1300, 30))
+            tela.blit(telav, telav_rect)
+            tela.blit(botao_reiniciar, botao_reiniciar_rect)
+            tela.blit(botao_proximo, botao_proximo_rect)
 
         #essa classe n era pra tá aq nn,era pra tá no arquivo da classe do personagem, mas td bem :)
         class Aluno(pygame.sprite.Sprite): # a segunda "Sprite" é uma classe q já é do pygame 
@@ -191,7 +209,7 @@ class FaseUm:
         tempo_min_spawn = 0.6   # segundos 
         tempo_max_spawn = 1.2  # segundos
         proximo_tempo = random.uniform(tempo_min_spawn, tempo_max_spawn) # tempo aleatório entre os dois valores
-        
+
         musica_gameover_tocando = False
         pausado = False
 
@@ -215,8 +233,16 @@ class FaseUm:
                     if event.type == MOUSEBUTTONDOWN and event.button == 1: # só funciona se apertar o botão esquerou ou os dois do mouse 
                         if botao_reiniciar_rect.collidepoint(event.pos): # pra saber se o clique foi na área que o botão foi desenhado 
                            resetar_jogo()
+                
+                if estado == "vitoria":
+                    if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                        if botao_reiniciar_rect.collidepoint(event.pos):
+                            resetar_jogo()
+                        if botao_proximo_rect.collidepoint(event.pos):
+                            return "FASE_TERMINADA"
+                
             if pausado:
-                tela_pause (tela, altura, largura, pontuacao)
+                tela_pause (tela, pontuacao)
                 pygame.display.flip()
                 continue
 
@@ -231,6 +257,7 @@ class FaseUm:
                     velocidade_scroll = velocidade_maxima
 
                 scroll -= velocidade_scroll * dt
+                tempo_j += dt
                 
                 #controle de spawn dos obstáculos por distância 
                 if len(obstaculos) == 0 or list(obstaculos)[-1].rect.right < largura - 140:
@@ -273,8 +300,12 @@ class FaseUm:
  
             elif estado == "gameover":
                 aluno.morrer()
+
+            elif estado == "vitoria":
+                tela_vitoria(tela, pontuacao)
     #a pontuação máxima da fase (vai ter q aumentar, mas por enquanto deixa assim só p testar) se mudar aqui tem q musar na fase 2 tb 
-            if score >= 700:
-                return "FASE_TERMINADA" #muda o estado pra fase terminada
+            if tempo_j >= tempo_v:
+                estado = "vitoria" 
+                # return "FASE_TERMINADA" #muda o estado pra fase terminada
                 
             pygame.display.update() # processamennto 
