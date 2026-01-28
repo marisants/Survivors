@@ -47,23 +47,19 @@ class FaseDois:
         pygame.display.set_caption("Survivors - Fase 2")
 
 
-        gameover_img = pygame.image.load("ferramentas/gameover.png").convert_alpha()
-        gameover_img = pygame.transform.scale(gameover_img, (800, 400))  # ajusta o tamanho
-        gameover_rect = gameover_img.get_rect(center=(800, 300))
-        
-        botao_reiniciar = pygame.image.load("ferramentas/reiniciar.png").convert_alpha()
-        botao_reiniciar = pygame.transform.scale(botao_reiniciar, (400, 200))  # ajusta o tamanho
-        botao_reiniciar_rect = gameover_img.get_rect(center=(950, 500))
+        gameover_img = pygame.image.load("ferramentas/gameover2.png").convert_alpha()
+        gameover_img = pygame.transform.scale(gameover_img, (850, 200))  # ajusta o tamanho
+        gameover_rect = gameover_img.get_rect(center=(750, 200))
+
+        botao_reiniciar = pygame.image.load("ferramentas/reiniciar2.png").convert_alpha()
+        botao_reiniciar = pygame.transform.scale(botao_reiniciar, (400, 100))  # ajusta o tamanho
+        botao_reiniciar_rect = botao_reiniciar.get_rect(center=(750, 390))
 
         botao_proximo = pygame.image.load("ferramentas/reiniciar2.png").convert_alpha()
         botao_proximo = pygame.transform.scale(botao_proximo, (400, 100))  # ajusta o tamanho
         botao_proximo_rect = botao_proximo.get_rect(center=(750, 510))
         
-        botao_mapa = pygame.image.load("ferramentas/mapavermelho.png").convert_alpha()
-        botao_mapa = pygame.transform.scale(botao_mapa, (400, 200))  # ajusta o tamanho
-        botao_mapa_rect = gameover_img.get_rect(center=(950, 600))
-
-        score = 700 # aqui coloca o limite que foi pra passar da fase 1 
+        score = 0 # criando o score
 
         pontuacao_final = None # só pra dzr q ainda n tem valor , mas n é 0
 
@@ -195,12 +191,16 @@ class FaseDois:
                         self.rect.y = self.pos_y_inicial
                             
             #faz a tela d gameover aparecer
-            def morrer(self):
-                tela.blit(pontuacao, (1300,30)) 
-                tela.blit(gameover_img, gameover_rect)
-                tela.blit(botao_reiniciar, botao_reiniciar_rect)
-                tela.blit(botao_mapa, botao_mapa_rect)
+            def morrer(self): # é um método da classe aluno e só é chamado o estado = game over
+                tela.blit(gameover_img, gameover_rect) # bota a img no canto crt
 
+                if pontuacao_final: # se tiver pontuação final
+                    tela.blit(
+                        pontuacao_final,
+                        pontuacao_final.get_rect(center=(750, 500))
+                    ) # tudo acima desenha a pontuação
+                #coisa do botão
+                tela.blit(botao_reiniciar, botao_reiniciar_rect)
 
         todas_as_sprites = pygame.sprite.Group() # cria um grupo pra tds as sprites
         obstaculos = pygame.sprite.Group() # cria um grupo pros obstáculos
@@ -241,13 +241,15 @@ class FaseDois:
                 if event.type == QUIT:
                     pygame.quit() # é pra sair do jogo
                     exit() # pra fechar a janela
-                if event.type == KEYDOWN:
+
+                if event.type == KEYDOWN and estado == "jogando": # pra n dar pra pular no game over
                     if event.key == K_SPACE: # pra só acontecer quando apertar na tecla do espaço
                         aluno.pular()
                     if event.key == pygame.K_ESCAPE  and not pausado :
                         pausado = True
                     elif event.key == pygame.K_ESCAPE and pausado:
                         pausado = False  
+
                 if event.type == KEYDOWN:
                   if event.key == K_DOWN:
                       aluno.abaixar()
@@ -255,6 +257,11 @@ class FaseDois:
                 if event.type == KEYUP: # quando soltar a tecla
                     if event.key == K_DOWN:
                         aluno.levantar()
+
+                if estado == "gameover":
+                    if event.type == MOUSEBUTTONDOWN and event.button == 1: # só funciona se apertar o botão esquerou ou os dois do mouse 
+                        if botao_reiniciar_rect.collidepoint(event.pos): # pra saber se o clique foi na área que o botão foi desenhado 
+                           resetar_jogo()              
 
                 if estado == "vitoria":
                     if event.type == MOUSEBUTTONDOWN and event.button == 1:
@@ -306,6 +313,11 @@ class FaseDois:
                         pygame.mixer.music.set_volume(0.3)
                         pygame.mixer.music.play(-1)
                         musica_gameover_tocando = True
+
+                    pontuacao_final = exibir_pontuacao(
+                        f"Pontos finais: {score}", 60, (0,0,0)
+                    ) # pelo q entendi é pra pontuação variar , n ser fixa
+                     # e imprime cm uma img , n cm número
 
                     estado = "gameover"
 

@@ -25,7 +25,7 @@ class FaseUm:
             tela_principal.blit(self.superficie_fase, (0, 0))
             pygame.display.flip()
             time.sleep(0.02) # Soneca curta para suavizar [16.3.1] soneca?? KKKKKKKKK
-            #é , a tela tipo demora um tantin pra aparecer
+            # é , a tela tipo demora um tantin pra aparecer
 
     def jogar(self,tela):
         pygame.init()

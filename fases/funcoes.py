@@ -14,15 +14,15 @@ def tela_pause (tela, pontuacao):
     tela.blit(texto_info, (445, 320))
 
 def tela_vitoria (tela, pontuacao):
-    telav = pygame.image.load("ferramentas/img_pause2.png").convert_alpha()
+    telav = pygame.image.load("ferramentas/img_vitoria.png").convert_alpha()
     telav = pygame.transform.scale(telav, (950, 200))  # ajusta o tamanho
     telav_rect = telav.get_rect(center=(750, 200))
 
-    botao_reiniciar = pygame.image.load("ferramentas/reiniciar2.png").convert_alpha()
+    botao_reiniciar = pygame.image.load("ferramentas/reiniciar_v.png").convert_alpha()
     botao_reiniciar = pygame.transform.scale(botao_reiniciar, (400, 100))  # ajusta o tamanho
     botao_reiniciar_rect = botao_reiniciar.get_rect(center=(750, 390))
 
-    botao_proximo = pygame.image.load("ferramentas/reiniciar2.png").convert_alpha()
+    botao_proximo = pygame.image.load("ferramentas/botao_proximo.png").convert_alpha()
     botao_proximo = pygame.transform.scale(botao_proximo, (400, 100))  # ajusta o tamanho
     botao_proximo_rect = botao_proximo.get_rect(center=(750, 510))
 

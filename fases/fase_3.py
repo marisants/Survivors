@@ -263,6 +263,7 @@ class FaseTres:
                         pausado = True
                     elif event.key == pygame.K_ESCAPE and pausado:
                         pausado = False 
+                        
                 if estado == "gameover":
                     if event.type == MOUSEBUTTONDOWN and event.button == 1: # só funciona se apertar o botão esquerou ou os dois do mouse 
                         if botao_reiniciar_rect.collidepoint(event.pos): # pra saber se o clique foi na área que o botão foi desenhado 
