@@ -27,7 +27,7 @@ class Obstaculo(pygame.sprite.Sprite): # classe pros obstáculos
         self.criacao()
 
     def criacao(self):
-        self.rect.x = random.randint(1800,2200) # fora da tela
+        self.rect.x = random.randint(1650,2400) # fora da tela
         self.rect.y = self.chao_y - self.rect.height  # posição no chão
 
     def update(self, dt):
