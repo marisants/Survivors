@@ -3,7 +3,7 @@ from pygame.locals import *
 from sys import exit
 import math
 import time 
-from classe_obstaculos import Obs_fase2 #importando a classe obstaculo
+from classe_obstaculos import Obs_fase2, Aviao #importando a classe obstaculo e aviao
 import random #importando a biblioteca para gerar números aleatórios
 from funcoes import tela_pause, tela_vitoria
 
@@ -64,7 +64,7 @@ class FaseDois:
         pontuacao_final = None # só pra dzr q ainda n tem valor , mas n é 0
 
         tempo_j = 0.0
-        tempo_v = 5
+        tempo_v = 20
 
 
         def exibir_pontuacao (textop, tamanho, cor): #função que vai exibir a pontuação na tela
@@ -134,7 +134,8 @@ class FaseDois:
                 
                 self.pulo = False
                 self.vel_y = 0 #velocidade inicial do pulo
-                self.gravidade = 4500 #força da gravidade
+                self.gravidade_subida = 4500
+                self.gravidade_descida = 5800  # mais forte pra baixar rápido (isso foi basicamente p arrumar o bixo baixando)
                 self.forca_pulo = -1400 #o quanto que o boneco vai pular pra cima
                 self.no_chao = True 
                 
@@ -158,7 +159,11 @@ class FaseDois:
   
             def update(self): # fzr update
                 # gravidade
-                self.vel_y += self.gravidade * dt # aceleração da gravidade
+                if self.vel_y < 0:
+                    self.vel_y += self.gravidade_subida * dt #isso é quando tá pulando
+                else:
+                    self.vel_y += self.gravidade_descida * dt #p descer mais rápido
+                    
                 self.rect.y += self.vel_y * dt # atualiza a posição do personagem
                     
                 # fazer o personagem parar no chão
@@ -289,10 +294,18 @@ class FaseDois:
                 
                 #controle de spawn dos obstáculos por distância 
                 if len(obstaculos) == 0 or list(obstaculos)[-1].rect.right < largura - 140:
-                    novo_obstaculo = Obs_fase2(altura - 100)
-                    obstaculos.add(novo_obstaculo)
-                    
-                    #reinicia o scroll mas não reseta a velocidade, se mantém a rolagem e a velocidade
+
+                    # nascimento dos obstáculos
+                    chance = random.randint(1, 5) #chandes de nascimento
+
+                    if chance == 1:
+                        # nasce avião
+                        obstaculos.add(Aviao(largura))
+                    else:
+                        # nasce ou teresa ou o banco
+                        obstaculos.add(Obs_fase2(altura - 100))
+
+                 #reinicia o scroll mas não reseta a velocidade, se mantém a rolagem e a velocidade
                 if abs(scroll) > imagem_fundo_largura:
                         scroll += imagem_fundo_largura
 
