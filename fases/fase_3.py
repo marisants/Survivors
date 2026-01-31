@@ -3,7 +3,7 @@ from pygame.locals import *
 from sys import exit
 import math
 import time 
-from classe_obstaculos import Obs_fase3 #importando a classe dos obstáculos dessa fase
+from classe_obstaculos import Obs_fase3, Aviao #importando a classe dos obstáculos dessa fase
 import random #importando a biblioteca para gerar números aleatórios
 from funcoes import tela_pause, tela_vitoria
 
@@ -65,7 +65,7 @@ class FaseTres:
         pontuacao_final = None # só pra dzr q ainda n tem valor , mas n é 0
 
         tempo_j = 0.0
-        tempo_v = 5
+        tempo_v = 20
 
         def resetar_jogo():
                 #essa próxima vai dzr q vai modificar essas variáveias aq dentro , mas q elas são de fora
@@ -221,9 +221,9 @@ class FaseTres:
         tiles = math.ceil(largura / 700 ) #  perguntar a mary  (calcula o número de coisinho  pra cobrir a largura da tela)
         #rolagem lateral do fundo  e aumeto gradual da velocidade
         scroll = 0 
-        velocidade_scroll = 100 #velocidade inicial da rolagem
+        velocidade_scroll = 200 #velocidade inicial da rolagem
         velocidade_maxima = 1500 
-        aceleracao = 120 # o quanto a velocidade vai aumentar por segundo 
+        aceleracao = 200 # o quanto a velocidade vai aumentar por segundo 
         
         distancia_spawn = 0 # distância dos nascimentos dos obstáculos
         #controle de spawn dos obstáculos
@@ -295,8 +295,14 @@ class FaseTres:
                 
                 #controle de spawn dos obstáculos por distância 
                 if len(obstaculos) == 0 or list(obstaculos)[-1].rect.right < largura - 140:
-                    novo_obstaculo = Obs_fase3(altura - 150) 
-                    obstaculos.add(novo_obstaculo)
+                    chance = random.randint(1, 5) #chandes de nascimento
+
+                    if chance == 1:
+                        # nasce avião
+                        obstaculos.add(Aviao(largura))
+                    else:
+                        # nasce ou teresa ou o banco
+                        obstaculos.add(Obs_fase3(altura - 150))
                     
                     #reinicia o scroll mas não reseta a velocidade, se mantém a rolagem e a velocidade
                 if abs(scroll) > imagem_fundo_largura:
