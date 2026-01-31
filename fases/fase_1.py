@@ -5,8 +5,8 @@ import math
 import time 
 from classe_obstaculos import Obs_fase1 #importando a classe dos obstáculos dessa fase
 import random #importando a biblioteca para gerar números aleatórios
+import funcoes
 from funcoes import tela_pause, tela_vitoria
-
 
 class FaseUm:
     def __init__(self):
@@ -220,6 +220,12 @@ class FaseUm:
                             resetar_jogo()
                         if botao_proximo_rect.collidepoint(event.pos):
                             return "FASE_TERMINADA"
+            #comando de voz reiniciar
+            if estado == "gameover" and funcoes.comando_voz: 
+                if "jogar de novo" in funcoes.comando_voz:    #aqui que muda a falazinha (todas as fases tem essa linha de código)
+                    print("REINICIANDO POR VOZ")
+                    funcoes.comando_voz = None  # limpa pra não repetir
+                    resetar_jogo()
                 
             if pausado:
                 tela_pause (tela, pontuacao)
@@ -286,6 +292,14 @@ class FaseUm:
     #a pontuação máxima da fase (vai ter q aumentar, mas por enquanto deixa assim só p testar) se mudar aqui tem q musar na fase 2 tb 
             if tempo_j >= tempo_v:
                 estado = "vitoria" 
-                # return "FASE_TERMINADA" #muda o estado pra fase terminada
+            #comando de voz próximo    
+            if estado == "vitoria" and funcoes.comando_voz:
+                if "próximo" in funcoes.comando_voz:
+                    print("PRÓXIMO POR COMANDO DE VOZ")
+                    funcoes.comando_voz = None
+                    return "FASE_TERMINADA" 
+                if "jogar de novo" in funcoes.comando_voz:
+                    print("RENICIAR POR COMANDO DE VOZ")
+                    resetar_jogo()           
                 
             pygame.display.update() # processamennto 

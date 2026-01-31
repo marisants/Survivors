@@ -2,6 +2,7 @@
 import pygame
 from pygame.locals import *
 from sys import exit
+import funcoes
 
 class TelaInicio:
     def mostrar_inicio(self, tela):
@@ -66,6 +67,12 @@ class TelaInicio:
                         if estado == 'menu':
                             pygame.mixer.music.stop()
                             return True
+            if funcoes.comando_voz and estado == "menu":
+                if "jogar" in funcoes.comando_voz:
+                    print("JOGO INICIADO POR VOZ")
+                    pygame.mixer.music.stop()
+                    funcoes.comando_voz = None  # limpa pra não repetir
+                    return True
                     
             tela.blit(botao,(botao_x, botao_y))
             tela.blit(logo,(logo_x, logo_y))

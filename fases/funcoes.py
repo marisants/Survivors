@@ -1,5 +1,9 @@
 import pygame
-
+from vosk import Model, KaldiRecognizer
+import pyaudio
+import json
+import threading
+import time
 
 def tela_pause (tela, pontuacao):
     telap = pygame.image.load("ferramentas/img_pause2.png").convert_alpha()
@@ -30,4 +34,33 @@ def tela_vitoria (tela, pontuacao):
     tela.blit(telav, telav_rect)
     tela.blit(botao_reiniciar, botao_reiniciar_rect)
     tela.blit(botao_proximo, botao_proximo_rect)
+    
+#comando de voz 
+comando_voz = None
+
+model = Model("C:/vosk/vosk-model-small-pt-0.3")
+rec = KaldiRecognizer(model, 16000)
+
+mic = pyaudio.PyAudio()
+stream = mic.open(
+    format=pyaudio.paInt16,
+    channels=1,
+    rate=16000,
+    input=True,
+    frames_per_buffer=4096
+)
+stream.start_stream()
+
+def ouvir_voz():
+    global comando_voz
+    while True:
+        data = stream.read(4096, exception_on_overflow=False)
+        if rec.AcceptWaveform(data):
+            resultado = json.loads(rec.Result())
+            texto = resultado.get("text", "").lower().strip()
+            if texto:
+                print("VOZ:", texto)
+                comando_voz = texto
+
+threading.Thread(target=ouvir_voz, daemon=True).start()
 
