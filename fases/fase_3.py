@@ -117,7 +117,10 @@ class FaseTres:
                 self.sprites_abaixando.append(pygame.image.load('imagens/agachar1.png'))
                 self.sprites_abaixando.append(pygame.image.load('imagens/agachar2.png'))
                 self.sprites_abaixando.append(pygame.image.load('imagens/agachar3.png'))
-                self.sprites_abaixando.append(pygame.image.load('imagens/agachar4.png')) # só pra colocar as sprites
+                self.sprites_abaixando.append(pygame.image.load('imagens/agachar4.png'))
+                self.sprites_abaixando.append(pygame.image.load('imagens/agachar5.png'))
+                self.sprites_abaixando.append(pygame.image.load('imagens/agachar6.png'))
+                self.sprites_abaixando.append(pygame.image.load('imagens/agachar7.png')) # só pra colocar as sprites
                 
                 #pra saber o estado do boneco
                 self.estado = "andando"
