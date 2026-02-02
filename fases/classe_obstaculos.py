@@ -175,7 +175,7 @@ class Obs_fase4(Obstaculo):
     def __init__(self, chao_y):
         tipos = [
           pygame.image.load(os.path.join(IMG_DIR, "camera.png")).convert_alpha(),
-          pygame.image.load(os.path.join(IMG_DIR, "banco.png")).convert_alpha()
+          pygame.image.load(os.path.join(IMG_DIR, "cadeira.png")).convert_alpha()
         ]
         super().__init__(chao_y, tipos, escala = (32*6, 32*6))
 
