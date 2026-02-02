@@ -3,10 +3,11 @@ from pygame.locals import *
 from sys import exit
 import math
 import time 
-from classe_obstaculos import Obs_fase2, Aviao #importando a classe obstaculo e aviao
 import random #importando a biblioteca para gerar números aleatórios
-import funcoes
-from funcoes import tela_pause, tela_vitoria, comando_voz
+from fases.classe_obstaculos import Obs_fase2, Aviao, ObsEasterEgg
+from fases import funcoes
+from fases.funcoes import tela_pause, tela_vitoria, comando_voz
+
 
 
 class FaseDois:
@@ -242,7 +243,8 @@ class FaseDois:
 
         estado = "jogando"
         
-        
+        pontuacao = exibir_pontuacao(0, 50, (0,0,0))
+
         while True:
             #relogio.tick(20) # tempo
             dt = clock.tick(FPS) / 1000
@@ -306,13 +308,17 @@ class FaseDois:
                 if len(obstaculos) == 0 or list(obstaculos)[-1].rect.right < largura - 140:
 
                     # nascimento dos obstáculos
-                    chance = random.randint(1, 5) #chandes de nascimento
+                    chance = random.randint(1, 12) #chandes de nascimento
 
                     if chance == 1:
                         # nasce avião
                         obstaculos.add(Aviao(largura))
-                    else:
+                    elif chance == 2:
                         # nasce ou teresa ou o banco
+                        obstaculos.add(Obs_fase2(altura - 100))
+                    elif chance == 5:
+                        obstaculos.add(ObsEasterEgg(altura - 100))                        
+                    else:
                         obstaculos.add(Obs_fase2(altura - 100))
 
                  #reinicia o scroll mas não reseta a velocidade, se mantém a rolagem e a velocidade
@@ -328,21 +334,26 @@ class FaseDois:
                 for obstaculo in obstaculos:
                     obstaculo.velocidade_scroll = min(velocidade_scroll, 800) # atualiza a velocidade do obstáculo conforme a velocidade do fundo
                 # colisão só com os pixels visíveis
-                if pygame.sprite.spritecollide(aluno, obstaculos, False, pygame.sprite.collide_mask):
+                colisoes = pygame.sprite.spritecollide(aluno, obstaculos, False, pygame.sprite.collide_mask)
 
-                    if not musica_gameover_tocando:
-                        pygame.mixer.music.stop()
-                        pygame.mixer.music.load("sons/04_Game Over (SID Stereo).mp3")
-                        pygame.mixer.music.set_volume(0.3)
-                        pygame.mixer.music.play(-1)
-                        musica_gameover_tocando = True
+                for obstaculo in colisoes:
+                    if hasattr(obstaculo, "easter"):
+                        return "EASTER_EGG"
+                    else:
+                        if not musica_gameover_tocando:
+                            pygame.mixer.music.stop()
+                            pygame.mixer.music.load("sons/04_Game Over (SID Stereo).mp3")
+                            pygame.mixer.music.set_volume(0.3)
+                            pygame.mixer.music.play(-1)
+                            musica_gameover_tocando = True
 
-                    pontuacao_final = exibir_pontuacao(
-                        f"Pontos finais: {score}", 60, (0,0,0)
-                    ) # pelo q entendi é pra pontuação variar , n ser fixa
-                     # e imprime cm uma img , n cm número
+                            pontuacao_final = exibir_pontuacao(
+                                f"Pontos finais: {score}", 60, (0,0,0)
+                            )
 
-                    estado = "gameover"
+                        estado = "gameover"
+                        break
+
 
                 else:
                     score += int(100 * dt)

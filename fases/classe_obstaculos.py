@@ -47,7 +47,7 @@ class Obstaculo(pygame.sprite.Sprite): # classe pros obstáculos
             self.kill()
             
         self.rect.y = self.chao_y - self.rect.height
-    
+
 #classe para o avião
 class Aviao(pygame.sprite.Sprite):
     def __init__(self, largura):
@@ -80,6 +80,7 @@ class Aviao(pygame.sprite.Sprite):
         # remove da tela
         if self.rect.right < 0:
             self.kill()
+
 #classe para o capelo
 class Capelo(pygame.sprite.Sprite):
     def __init__(self, largura):
@@ -127,8 +128,6 @@ class Obs_fase2(Obstaculo):
           pygame.image.load(os.path.join(IMG_DIR, "banco.png")).convert_alpha(),
           pygame.image.load(os.path.join(IMG_DIR, "teresa.png")).convert_alpha()
         ]
-        if random.randint(1, 200) == 1: # p o avião aparecer 1 em 200 vezes q roda o código (FPS)
-            self.obstaculos.add(Aviao(self.largura))
         super().__init__(chao_y, tipos, escala=(32*6,32*6))
         
 class Obs_fase3(Obstaculo):
@@ -137,8 +136,6 @@ class Obs_fase3(Obstaculo):
           pygame.image.load(os.path.join(IMG_DIR, "lixeira.png")).convert_alpha(),
           pygame.image.load(os.path.join(IMG_DIR, "mochila.png")).convert_alpha()
         ]
-        if random.randint(1, 200) == 1: # p o avião aparecer 1 em 200 vezes q roda o código (FPS)
-            self.obstaculos.add(Aviao(self.largura))
         super().__init__(chao_y, tipos, escala = (32*5, 32*5))
         
 class Obs_fase4(Obstaculo):
@@ -147,6 +144,12 @@ class Obs_fase4(Obstaculo):
           pygame.image.load(os.path.join(IMG_DIR, "camera.png")).convert_alpha(),
           pygame.image.load(os.path.join(IMG_DIR, "banco.png")).convert_alpha()
         ]
-        if random.randint(1, 200) == 1: # p o avião aparecer 1 em 200 vezes q roda o código (FPS)
-            self.obstaculos.add(Aviao(self.largura))
         super().__init__(chao_y, tipos, escala = (32*6, 32*6))
+
+class ObsEasterEgg(Obstaculo):
+    def __init__(self, chao_y):
+        tipos = [
+            pygame.image.load(os.path.join(IMG_DIR, "teresa_azul.png")).convert_alpha()
+        ]
+        super().__init__(chao_y, tipos, escala=(32*6, 32*6))
+        self.easter = True  # REVERRRRRRRRRRRRRRRRR
