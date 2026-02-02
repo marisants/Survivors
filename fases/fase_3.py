@@ -66,7 +66,7 @@ class FaseTres:
         pontuacao_final = None # só pra dzr q ainda n tem valor , mas n é 0
 
         tempo_j = 0.0
-        tempo_v = 20
+        tempo_v = 2
 
         def resetar_jogo():
                 #essa próxima vai dzr q vai modificar essas variáveias aq dentro , mas q elas são de fora
@@ -117,10 +117,7 @@ class FaseTres:
                 self.sprites_abaixando.append(pygame.image.load('imagens/agachar1.png'))
                 self.sprites_abaixando.append(pygame.image.load('imagens/agachar2.png'))
                 self.sprites_abaixando.append(pygame.image.load('imagens/agachar3.png'))
-                self.sprites_abaixando.append(pygame.image.load('imagens/agachar4.png'))
-                self.sprites_abaixando.append(pygame.image.load('imagens/agachar5.png'))
-                self.sprites_abaixando.append(pygame.image.load('imagens/agachar6.png'))
-                self.sprites_abaixando.append(pygame.image.load('imagens/agachar7.png')) # só pra colocar as sprites
+                self.sprites_abaixando.append(pygame.image.load('imagens/agachar4.png')) # só pra colocar as sprites
                 
                 #pra saber o estado do boneco
                 self.estado = "andando"
@@ -152,13 +149,13 @@ class FaseTres:
                     self.som_pulo.play()
 
             def abaixar(self):
-                if self.no_chao:
-                  self.estado = "abaixado"
-                  self.sprites = self.sprites_abaixando
-                  self.atual = 0
+                if self.no_chao and self.estado == "andando":
+                    self.estado = "abaixando"
+                    self.sprites = self.sprites_abaixando
+                    self.atual = 0
 
             def levantar(self):
-                if self.estado == "abaixado":
+                if self.estado in ("abaixado", "abaixando"):
                     self.estado = "andando"
                     self.sprites = self.sprites_correndo
                     self.atual = 0
@@ -175,9 +172,20 @@ class FaseTres:
                     self.vel_y = 0
                     self.no_chao = True
 
-                self.atual += 9 * dt # controla a velocidade da troca das sprites (cm eu tirei os dois relógio e deixei só um ai teve q mudar isso)
-                if self.atual >= len(self.sprites): # pra se repetir , no caso de quando acabar as sprits começa dnv
-                    self.atual = 0  
+                if self.estado == "abaixando":
+                    self.atual += 9 * dt
+                    if self.atual >= len(self.sprites_abaixando) - 1:
+                        self.atual = len(self.sprites_abaixando) - 1
+                        self.estado = "abaixado"
+
+                elif self.estado == "andando":
+                    self.atual += 9 * dt
+                    if self.atual >= len(self.sprites):
+                        self.atual = 0
+
+                elif self.estado == "abaixado":
+                    self.atual = len(self.sprites_abaixando) - 1
+                 
                 self.image = self.sprites[int(self.atual)] # é pra poder botar número quebrado
                 self.image = pygame.transform.scale(self.image, (32*13, 32*13)) # aumenta o tamanho da img , a primeira é largura e a segunda é altura
             
@@ -185,7 +193,7 @@ class FaseTres:
 
                 self.image = self.sprites[int(self.atual)] # é pra poder botar número quebrado
                 
-                if self.estado == "abaixado":
+                if self.estado in ("abaixado", "abaixando"):
                     self.image = pygame.transform.scale(self.image, (32*7, 32*7)) #ajusta o tamanho quando abaixa
                 else:
                     self.image = pygame.transform.scale(self.image, (32*13, 32*13))  #se n tiver abaixado é o normal
@@ -195,7 +203,7 @@ class FaseTres:
                 self.mask = pygame.mask.from_surface(self.image) #pro bixo da colisão funcionar certinho
                 
                 if self.no_chao:
-                    if self.estado == "abaixado": 
+                    if self.estado in ("abaixado", "abaixando"): 
                         self.rect.y = self.pos_y_inicial + 130 #faz o bixo baixar  no mrm chão que ele fica em pé
                     else:
                         self.rect.y = self.pos_y_inicial
