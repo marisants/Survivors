@@ -66,7 +66,7 @@ class FaseDois:
         pontuacao_final = None # só pra dzr q ainda n tem valor , mas n é 0
 
         tempo_j = 0.0
-        tempo_v = 20
+        tempo_v = 25
 
 
         def exibir_pontuacao (textop, tamanho, cor): #função que vai exibir a pontuação na tela

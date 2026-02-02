@@ -65,7 +65,7 @@ class FaseUm:
         pontuacao_final = None # só pra dzr q ainda n tem valor , mas n é 0
 
         tempo_j = 0.0
-        tempo_v = 2
+        tempo_v = 20
 
         def resetar_jogo():
                 #essa próxima vai dzr q vai modificar essas variáveias aq dentro , mas q elas são de fora

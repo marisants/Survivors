@@ -72,6 +72,9 @@ def main():
 
         elif estado == "FASE4":
             resultado = fase4.jogar(tela)
+            if resultado == "FASE_1":
+                fase1 = FaseUm()
+                fase1.jogar(tela)
 
             if resultado == "FASE_TERMINADA":
                 estado = "FIM"

@@ -4,6 +4,7 @@ import pyaudio
 import json
 import threading
 import time
+import math
 
 def tela_pause (tela, pontuacao):
     telap = pygame.image.load("ferramentas/img_pause2.png").convert_alpha()
@@ -17,6 +18,53 @@ def tela_pause (tela, pontuacao):
     tela.blit(telap, telap_rect)
     tela.blit(texto_info, (445, 320))
 
+def ultima_tela(tela, largura, altura):
+    clock = pygame.time.Clock()
+
+    imagem_fundo = pygame.image.load("ferramentas/img_fim.png").convert()
+    imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
+
+    # TEXTO FIM
+    texto_fim = pygame.image.load("ferramentas/texto_fim.png").convert_alpha()
+    texto_fim = pygame.transform.scale(texto_fim, (800, 180))
+    texto_fim_rect = texto_fim.get_rect(topleft=(250, 60))
+
+    # TEXTO V
+    texto_v = pygame.image.load("ferramentas/texto_v.png").convert_alpha()
+    texto_v = pygame.transform.scale(texto_v, (650, 160))
+    texto_v_rect = texto_v.get_rect(topleft=(250, 260))
+
+    # BOTÃO MENOR E ALINHADO COM OS TEXTOS
+    botao_reiniciar = pygame.image.load("ferramentas/reiniciar_a.png").convert_alpha()
+    botao_reiniciar = pygame.transform.scale(botao_reiniciar, (220, 100))
+
+    botao_reiniciar_rect = botao_reiniciar.get_rect(
+        centerx=texto_fim_rect.centerx,
+        top=texto_v_rect.bottom + 40
+    )
+
+    rodando = True
+    while rodando:
+        clock.tick(60)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if botao_reiniciar_rect.collidepoint(event.pos):
+                    return "FASE_1"
+
+
+        tela.blit(imagem_fundo, (0, 0))
+        tela.blit(texto_fim, texto_fim_rect)
+        tela.blit(texto_v, texto_v_rect)
+        tela.blit(botao_reiniciar, botao_reiniciar_rect)
+
+        pygame.display.update()
+
+
+    
 def tela_vitoria (tela, pontuacao):
     telav = pygame.image.load("ferramentas/img_vitoria.png").convert_alpha()
     telav = pygame.transform.scale(telav, (950, 200))  # ajusta o tamanho

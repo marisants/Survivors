@@ -51,12 +51,6 @@ class FaseEasterEgg:
         tempo_j = 0.0
         tempo_v = 20
 
-
-        def exibir_pontuacao (textop, tamanho, cor): #função que vai exibir a pontuação na tela
-            fonte = pygame.font.Font("ferramentas/HVD_Comic_Serif_Pro.otf", tamanho)
-            mensagem = f'{textop}'
-            mensagem_formatada = fonte.render(mensagem, True, cor)
-            return mensagem_formatada
     
         #essa classe n era pra tá aq nn,era pra tá no arquivo da classe do personagem, mas td bem :)
         class Aluno(pygame.sprite.Sprite): # a segunda "Sprite" é uma classe q já é do pygame 

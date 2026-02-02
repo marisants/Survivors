@@ -185,7 +185,7 @@ class ObsEasterEgg(Obstaculo):
             pygame.image.load(os.path.join(IMG_DIR, "teresa_azul.png")).convert_alpha()
         ]
         super().__init__(chao_y, tipos, escala=(32*6, 32*6))
-        self.easter = True  # REVERRRRRRRRRRRRRRRRR
+        self.easter = True  
 
 class ObsfaseEasterEgg(Obstaculo):
     def __init__(self, chao_y):

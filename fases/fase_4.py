@@ -6,7 +6,7 @@ import time
 from classe_obstaculos import Obs_fase4, Capelo #importando a classe dos obstáculos dessa fase
 import random #importando a biblioteca para gerar números aleatórios
 import funcoes
-from funcoes import tela_pause, tela_vitoria,comando_voz
+from funcoes import tela_pause, tela_vitoria,comando_voz, ultima_tela
 
 
 class FaseQuatro:
@@ -66,7 +66,7 @@ class FaseQuatro:
         pontuacao_final = None # só pra dzr q ainda n tem valor , mas n é 0
 
         tempo_j = 0.0
-        tempo_v = 20
+        tempo_v = 35
 
         def resetar_jogo():
                 #essa próxima vai dzr q vai modificar essas variáveias aq dentro , mas q elas são de fora
@@ -361,7 +361,11 @@ class FaseQuatro:
                 aluno.morrer()
 
             elif estado == "vitoria":
-                tela_vitoria(tela, pontuacao)
+                acao = ultima_tela(tela, largura, altura)
+
+                if acao == "FASE_1":
+                    return "FASE_1"
+
     #a pontuação máxima da fase (vai ter q aumentar, mas por enquanto deixa assim só p testar) se mudar aqui tem q musar na fase 2 tb 
             if tempo_j >= tempo_v:
                 estado = "vitoria"
