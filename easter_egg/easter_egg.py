@@ -4,7 +4,7 @@ import math
 import time
 import random
 
-from fases.classe_obstaculos import Obs_fase2, Aviao
+from fases.classe_obstaculos import ObsfaseEasterEgg, Notapeba
 from fases import funcoes
 from fases.funcoes import tela_vitoria
 
@@ -44,7 +44,7 @@ class FaseEasterEgg:
         altura = 700 # define o tamanho da tela
 
         PRETO = (0,0,0)  # só uma variável pra botar o none e nao a cor
-        pygame.display.set_caption("Survivors - Fase 2")
+        pygame.display.set_caption("Survivors - Easter Egg")
         
         score = 0 # criando o score
 
@@ -92,7 +92,7 @@ class FaseEasterEgg:
                 self.rect = self.image.get_rect() # pega tipo as cordenadas de onde tá a imagem 
                 self.rect.topleft = largura-1400, altura-480 # pra dzr a posição onde o boneco vai ficar
 
-                self.pos_y_inicial = altura-480 # pra dzr onde o boneco tá antes de pular
+                self.pos_y_inicial = altura-400 # pra dzr onde o boneco tá antes de pular
                 
                 self.pulo = False
                 self.vel_y = 0 #velocidade inicial do pulo
@@ -212,10 +212,10 @@ class FaseEasterEgg:
                     if event.key == K_DOWN:
                         aluno.levantar()
 
-                if estado == "vitoria":
-                    if event.type == MOUSEBUTTONDOWN and event.button == 1:
-                        if botao_proximo_rect.collidepoint(event.pos):
-                            return "EASTER_COMPLETO"
+                #if estado == "vitoria":
+                #    if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                #        if botao_proximo_rect.collidepoint(event.pos):
+                #            return "EASTER_COMPLETO"
 
             for i in range (tiles):
                 tela.blit(imagem_fundo, (i * imagem_fundo_largura + scroll, 0 ))
@@ -237,10 +237,10 @@ class FaseEasterEgg:
 
                     if chance == 1:
                         # nasce avião
-                        obstaculos.add(Aviao(largura))
+                        obstaculos.add(Notapeba(largura))
                     else:
                         # nasce ou teresa ou o banco
-                        obstaculos.add(Obs_fase2(altura - 100))
+                        obstaculos.add(ObsfaseEasterEgg(altura - 50))
 
                  #reinicia o scroll mas não reseta a velocidade, se mantém a rolagem e a velocidade
                 if abs(scroll) > imagem_fundo_largura:
@@ -259,13 +259,6 @@ class FaseEasterEgg:
                     return "GAME_OVER"
 
             if tempo_j >= tempo_v:
-                # Antes estava assim:
-                # return "EASTER_COMPLETO"
-                # Mas se você quer que vá direto pra fase 4, faça:
-                pontuacao_surface = exibir_pontuacao(
-                    f"Pontos finais: {score}", 60, (0,0,0)
-                )
-                tela_vitoria(tela, pontuacao_surface)
                 return "EASTER_COMPLETO"
 
             
